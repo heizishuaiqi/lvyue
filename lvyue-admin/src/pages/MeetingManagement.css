@@ -1,0 +1,214 @@
+/* 会议管理页面样式 */
+.meeting-management {
+  padding: 24px;
+  background-color: #F5F7FA;
+  min-height: 100vh;
+}
+
+/* 顶部操作栏样式 */
+.meeting-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  background-color: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.search-bar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.search-bar input {
+  padding: 8px 12px;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #333;
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: #4086FF;
+  box-shadow: 0 0 0 2px rgba(64, 134, 255, 0.1);
+}
+
+.search-bar input:disabled {
+  background-color: #F3F4F6;
+  cursor: not-allowed;
+}
+
+.create-btn {
+  background-color: #4086FF;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.create-btn:hover:not(:disabled) {
+  background-color: #2B6CD9;
+}
+
+.create-btn:disabled {
+  background-color: #93C5FD;
+  cursor: not-allowed;
+}
+
+/* 错误提示样式 */
+.error-message {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background-color: #FEE2E2;
+  border: 1px solid #FCA5A5;
+  border-radius: 6px;
+  color: #DC2626;
+  font-size: 14px;
+}
+
+/* 会议列表表格样式 */
+.meeting-table {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  min-height: 200px;
+  position: relative;
+}
+
+/* 加载状态样式 */
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #6B7280;
+  font-size: 14px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+th {
+  background-color: #F9FAFB;
+  font-weight: 600;
+  color: #374151;
+}
+
+tr:hover {
+  background-color: #F9FAFB;
+}
+
+/* 操作按钮样式 */
+td button {
+  margin-right: 8px;
+  padding: 4px 8px;
+  border: 1px solid #E5E7EB;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #374151;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+td button:hover:not(:disabled) {
+  border-color: #4086FF;
+  color: #4086FF;
+}
+
+td button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+td button:last-child {
+  margin-right: 0;
+}
+
+/* 分页器样式 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.pagination button {
+  padding: 6px 12px;
+  border: 1px solid #E5E7EB;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #374151;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.pagination button:hover:not(:disabled) {
+  border-color: #4086FF;
+  color: #4086FF;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  color: #6B7280;
+  font-size: 14px;
+}
+
+/* 响应式设计 */
+@media screen and (max-width: 768px) {
+  .meeting-management {
+    padding: 16px;
+  }
+
+  .meeting-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .search-bar {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .search-bar input {
+    width: 100%;
+  }
+
+  .create-btn {
+    width: 100%;
+  }
+
+  .meeting-table {
+    overflow-x: auto;
+  }
+
+  table {
+    min-width: 800px;
+  }
+} 

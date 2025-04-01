@@ -1,0 +1,241 @@
+/* 履职统计页面样式 */
+.statistics-page {
+  background-color: white;
+  min-height: calc(100vh - 112px);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* 操作栏样式 */
+.operation-bar {
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #E5E5E5;
+  width: 100%;
+  gap: 16px;
+}
+
+.filter-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.date-input {
+  width: 140px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid #D9D9D9;
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+
+.date-input:focus {
+  border-color: #4086FF;
+}
+
+.date-separator {
+  color: #666;
+  font-size: 14px;
+}
+
+.search-area {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+}
+
+.search-input {
+  width: 240px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid #D9D9D9;
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+
+.search-input:focus {
+  border-color: #4086FF;
+}
+
+.search-button {
+  height: 32px;
+  padding: 0 16px;
+  background-color: #4086FF;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+
+.search-button:hover {
+  background-color: #2466CC;
+}
+
+.action-button {
+  height: 32px;
+  padding: 0 16px;
+  background-color: white;
+  border: 1px solid #D9D9D9;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+
+.action-button:hover {
+  border-color: #4086FF;
+  color: #4086FF;
+}
+
+/* 表格样式 */
+.table-container {
+  padding: 0;
+  flex: 1;
+  overflow: auto;
+  width: 100%;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  table-layout: fixed;
+}
+
+.data-table th,
+.data-table td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid #E5E5E5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.data-table th {
+  background-color: #FAFAFA;
+  font-weight: 500;
+  color: #333;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.data-table td {
+  color: #666;
+}
+
+.data-table tr:hover {
+  background-color: #F5F7FA;
+}
+
+/* 操作按钮样式 */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.table-button {
+  padding: 4px 8px;
+  background: none;
+  border: none;
+  color: #4086FF;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s;
+}
+
+.table-button:hover {
+  color: #2466CC;
+}
+
+/* 分页样式 */
+.pagination {
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #E5E5E5;
+}
+
+.page-info {
+  color: #666;
+  font-size: 14px;
+}
+
+.page-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.page-button {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  background-color: white;
+  border: 1px solid #D9D9D9;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+
+.page-button:hover:not(:disabled) {
+  border-color: #4086FF;
+  color: #4086FF;
+}
+
+.page-button.active {
+  background-color: #4086FF;
+  color: white;
+  border-color: #4086FF;
+}
+
+.page-button:disabled {
+  cursor: not-allowed;
+  color: #D9D9D9;
+}
+
+/* 响应式设计 */
+@media screen and (max-width: 768px) {
+  .operation-bar {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .filter-area,
+  .search-area,
+  .action-area {
+    width: 100%;
+  }
+
+  .filter-area {
+    flex-wrap: wrap;
+  }
+
+  .date-input {
+    flex: 1;
+  }
+
+  .search-input {
+    flex: 1;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+  .data-table {
+    min-width: 800px;
+  }
+} 
