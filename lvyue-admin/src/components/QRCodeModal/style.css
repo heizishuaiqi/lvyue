@@ -1,0 +1,112 @@
+.qrcode-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.qrcode-modal {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.qrcode-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.qrcode-modal-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.close-button:hover {
+  color: #333;
+}
+
+.qrcode-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.qrcode-container {
+  padding: 20px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+}
+
+.meeting-info {
+  width: 100%;
+  padding: 15px;
+  background: #f8f8f8;
+  border-radius: 8px;
+}
+
+.meeting-info p {
+  margin: 8px 0;
+  color: #333;
+}
+
+.meeting-info strong {
+  color: #666;
+}
+
+.qrcode-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.download-button {
+  background-color: #4086FF;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.download-button:hover {
+  background-color: #3075E8;
+}
+
+/* 缩略图样式 */
+.qrcode-thumbnail {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.qrcode-thumbnail:hover {
+  transform: scale(1.1);
+} 

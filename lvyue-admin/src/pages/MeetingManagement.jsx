@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import MeetingModal from '../components/MeetingModal';
+import QRCodeModal from '../components/QRCodeModal';
 import './MeetingManagement.css';
 
 const MeetingManagement = () => {
@@ -16,6 +18,9 @@ const MeetingManagement = () => {
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [currentMeeting, setCurrentMeeting] = useState(null);
+  // 二维码模态框控制
+  const [isQRCodeModalVisible, setIsQRCodeModalVisible] = useState(false);
+  const [selectedMeeting, setSelectedMeeting] = useState(null);
 
   // 获取会议列表数据
   const fetchMeetings = async () => {
@@ -162,8 +167,20 @@ const MeetingManagement = () => {
 
   // 处理报名开关
   const handleToggleRegistration = async (id, currentStatus) => {
-    // TODO: 调用后端 API 切换报名状态
-    console.log('切换报名状态:', id, !currentStatus);
+    try {
+      // TODO: 调用后端 API 切换报名状态
+      console.log('切换报名状态:', id, !currentStatus);
+      
+      // 模拟API调用成功后更新本地状态
+      setMeetings(meetings.map(meeting => 
+        meeting.id === id 
+          ? { ...meeting, isRegistrationOpen: !currentStatus }
+          : meeting
+      ));
+    } catch (error) {
+      console.error('切换报名状态失败:', error);
+      alert('操作失败，请重试');
+    }
   };
 
   // 处理创建会议提交
@@ -181,6 +198,12 @@ const MeetingManagement = () => {
     setIsEditModalVisible(false);
     setCurrentMeeting(null);
     fetchMeetings();
+  };
+
+  // 处理查看二维码
+  const handleViewQRCode = (meeting) => {
+    setSelectedMeeting(meeting);
+    setIsQRCodeModalVisible(true);
   };
 
   return (
@@ -210,7 +233,7 @@ const MeetingManagement = () => {
         </button>
       </div>
 
-      {/* 会议列表 */}
+      {/* 会议列表表格 */}
       <div className="meeting-table">
         <table>
           <thead>
@@ -220,6 +243,8 @@ const MeetingManagement = () => {
               <th>会议名称</th>
               <th>会议时间</th>
               <th>会议地点</th>
+              <th>报名二维码</th>
+              <th>报名状态</th>
               <th>更新时间</th>
               <th>操作</th>
             </tr>
@@ -232,17 +257,32 @@ const MeetingManagement = () => {
                 <td>{meeting.name}</td>
                 <td>{`${meeting.startTime} - ${meeting.endTime}`}</td>
                 <td>{meeting.location}</td>
+                <td>
+                  <div className="qrcode-preview" onClick={() => handleViewQRCode(meeting)}>
+                    <QRCodeSVG
+                      value={`${window.location.origin.replace('admin', 'wap')}/registration/${meeting.id}`}
+                      size={40}
+                      level="L"
+                    />
+                  </div>
+                </td>
+                <td>
+                  <span className={`status-tag ${meeting.isRegistrationOpen ? 'open' : 'closed'}`}>
+                    {meeting.isRegistrationOpen ? '报名中' : '已关闭'}
+                  </span>
+                </td>
                 <td>{meeting.updatedAt}</td>
                 <td>
-                  <button onClick={() => handleEdit(meeting)}>编辑</button>
-                  <button onClick={() => handleDelete(meeting.id)}>删除</button>
-                  <button
-                    onClick={() =>
-                      handleToggleRegistration(meeting.id, meeting.isRegistrationOpen)
-                    }
-                  >
-                    {meeting.isRegistrationOpen ? '关闭报名' : '开启报名'}
-                  </button>
+                  <div className="action-buttons">
+                    <button
+                      className={`toggle-button ${meeting.isRegistrationOpen ? 'close' : 'open'}`}
+                      onClick={() => handleToggleRegistration(meeting.id, meeting.isRegistrationOpen)}
+                    >
+                      {meeting.isRegistrationOpen ? '关闭报名' : '开启报名'}
+                    </button>
+                    <button onClick={() => handleEdit(meeting)}>编辑</button>
+                    <button onClick={() => handleDelete(meeting.id)}>删除</button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -285,6 +325,16 @@ const MeetingManagement = () => {
         }}
         onSubmit={handleEditSubmit}
         initialData={currentMeeting}
+      />
+
+      {/* 二维码模态框 */}
+      <QRCodeModal
+        visible={isQRCodeModalVisible}
+        meeting={selectedMeeting}
+        onClose={() => {
+          setIsQRCodeModalVisible(false);
+          setSelectedMeeting(null);
+        }}
       />
     </div>
   );

@@ -211,4 +211,103 @@ td button:last-child {
   table {
     min-width: 800px;
   }
+}
+
+/* 二维码预览样式 */
+.qrcode-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.qrcode-preview:hover {
+  background-color: #f0f0f0;
+}
+
+/* 报名状态标签样式 */
+.status-tag {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.status-tag.open {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.status-tag.closed {
+  background-color: #f5f5f5;
+  color: #999;
+}
+
+/* 操作按钮样式 */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  min-width: 200px;
+}
+
+.action-buttons button {
+  padding: 4px 8px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.action-buttons .toggle-button {
+  border: 1px solid transparent;
+}
+
+.action-buttons .toggle-button.open {
+  background-color: #e6f7ff;
+  border-color: #1890ff;
+  color: #1890ff;
+}
+
+.action-buttons .toggle-button.open:hover {
+  background-color: #1890ff;
+  color: white;
+}
+
+.action-buttons .toggle-button.close {
+  background-color: #fff1f0;
+  border-color: #ff4d4f;
+  color: #ff4d4f;
+}
+
+.action-buttons .toggle-button.close:hover {
+  background-color: #ff4d4f;
+  color: white;
+}
+
+.action-buttons button:not(.toggle-button):hover {
+  color: #4086FF;
+  border-color: #4086FF;
+}
+
+/* 表格单元格样式优化 */
+.meeting-table td {
+  padding: 12px 8px;
+  vertical-align: middle;
+}
+
+/* 响应式调整 */
+@media screen and (max-width: 1200px) {
+  .action-buttons {
+    flex-direction: column;
+    min-width: 100px;
+  }
 } 
