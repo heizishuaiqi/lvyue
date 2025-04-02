@@ -1,0 +1,155 @@
+/* 登录页面容器 */
+.login-page-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 登录页面头部 */
+.login-page-header {
+  text-align: center;
+  margin: 40px 0;
+  width: 100%;
+}
+
+.login-page-header h1 {
+  font-size: 24px;
+  color: #333;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* 登录页面内容区 */
+.login-page-content {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* 登录方式切换 */
+.login-type-switch {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.switch-btn {
+  padding: 8px 20px;
+  border: none;
+  background: none;
+  font-size: 16px;
+  color: #666666;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease;
+  outline: none;
+}
+
+.switch-btn:focus {
+  outline: none;
+}
+
+.switch-btn.active {
+  color: #4086FF;
+}
+
+.switch-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #4086FF;
+  border-radius: 1px;
+}
+
+/* 登录表单 */
+.login-form {
+  width: 100%;
+  max-width: 400px;
+}
+
+.form-item {
+  margin-bottom: 20px;
+}
+
+.form-item input {
+  width: 100%;
+  height: 44px;
+  padding: 0 16px;
+  border: 1px solid #e5e6eb;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #333333;
+  transition: all 0.3s ease;
+}
+
+.form-item input:focus {
+  outline: none;
+  border-color: #4086FF;
+  box-shadow: 0 0 0 2px rgba(64, 134, 255, 0.1);
+}
+
+.form-item input::placeholder {
+  color: #999999;
+}
+
+/* 验证码输入框组 */
+.verify-code {
+  display: flex;
+  gap: 12px;
+}
+
+.verify-code input {
+  flex: 1;
+}
+
+.get-code-btn {
+  padding: 0 20px;
+  height: 44px;
+  border: 1px solid #4086FF;
+  border-radius: 8px;
+  background: none;
+  color: #4086FF;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.get-code-btn:focus {
+  outline: none;
+}
+
+.get-code-btn:hover {
+  background-color: rgba(64, 134, 255, 0.1);
+}
+
+/* 提交按钮 */
+.submit-btn {
+  width: 100%;
+  height: 44px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4086FF;
+  color: #ffffff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+  background-color: #3371d9;
+}
+
+.submit-btn:active {
+  transform: scale(0.98);
+} 

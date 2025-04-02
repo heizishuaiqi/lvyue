@@ -1,0 +1,166 @@
+/* 全局样式：去除所有元素的焦点边框 */
+button, input, a {
+  outline: none !important;
+}
+
+button:focus, input:focus, a:focus {
+  outline: none !important;
+}
+
+/* 登录表单容器 */
+.login-form-container {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0 20px;
+}
+
+/* 登录方式切换 */
+.login-type-switch {
+  display: flex;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e5e6eb;
+}
+
+.switch-btn {
+  flex: 1;
+  padding: 12px 0;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.switch-btn:focus {
+  outline: none;
+}
+
+.switch-btn.active {
+  color: #4086FF;
+  border-bottom-color: #4086FF;
+}
+
+/* 表单组 */
+.form-group {
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.form-group input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #e5e6eb;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #4086FF;
+  box-shadow: 0 0 0 2px rgba(64, 134, 255, 0.1);
+}
+
+.form-group input.error {
+  border-color: #ff4d4f;
+}
+
+/* 验证码输入框组 */
+.verify-code-input {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.verify-code-input input {
+  flex: 1;
+}
+
+.get-code-btn {
+  width: 120px;
+  height: 40px;
+  padding: 0;
+  font-size: 14px;
+  color: #4086FF;
+  background: none;
+  border: 1px solid #4086FF;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.get-code-btn:focus {
+  outline: none;
+}
+
+.get-code-btn:hover {
+  background: rgba(64, 134, 255, 0.1);
+}
+
+.get-code-btn.disabled {
+  color: #999;
+  border-color: #e5e6eb;
+  cursor: not-allowed;
+}
+
+/* 错误信息 */
+.error-message {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #ff4d4f;
+}
+
+.submit-error {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* 提交按钮 */
+.submit-btn {
+  width: 100%;
+  height: 40px;
+  padding: 0;
+  font-size: 15px;
+  color: #fff;
+  background: #4086FF;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.submit-btn:focus {
+  outline: none;
+}
+
+.submit-btn:hover {
+  background: #3a7be6;
+}
+
+.submit-btn:disabled {
+  background: #c2c2c2;
+  cursor: not-allowed;
+}
+
+.submit-btn.loading {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+/* 密码输入框组 */
+.password-group {
+  width: 100%;
+}
+
+.password-group input {
+  width: 100%;
+} 

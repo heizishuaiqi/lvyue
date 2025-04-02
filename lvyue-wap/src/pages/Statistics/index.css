@@ -1,0 +1,177 @@
+/* 统计页面容器 */
+.statistics-page {
+  min-height: 100vh;
+  background-color: #f7f8fa;
+  padding-bottom: 20px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+/* 统计页面标题栏 */
+.statistics-header {
+  background-color: #4086FF;
+  color: white;
+  padding: 15px 20px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.statistics-header h1 {
+  font-size: 18px;
+  margin: 0;
+  font-weight: 500;
+  flex: 1;
+  text-align: center;
+}
+
+/* 个人中心按钮 */
+.profile-btn {
+  background: none;
+  border: none;
+  color: white;
+  padding: 4px;
+  cursor: pointer;
+  outline: none;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 16px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.profile-btn:active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 统计卡片 */
+.statistics-card {
+  background: #fff;
+  border-radius: 0;
+  padding: 20px;
+  margin: 0 0 16px 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  width: 100%;
+}
+
+.statistics-card h3 {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 12px;
+}
+
+.statistics-item {
+  text-align: center;
+  padding: 16px;
+  background: #f7f8fa;
+  border-radius: 8px;
+}
+
+.statistics-item .count {
+  display: block;
+  font-size: 24px;
+  color: #4086FF;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.statistics-item .label {
+  font-size: 14px;
+  color: #666;
+}
+
+/* 参会记录区域 */
+.meetings-section {
+  padding: 0 16px;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 16px;
+  color: #333;
+  margin: 24px 0 16px;
+  font-weight: 500;
+}
+
+/* 会议卡片容器 */
+.meeting-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 会议卡片 */
+.meeting-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* 会议类型标签 */
+.meeting-tag {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #4086FF;
+  color: white;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 0 8px 0 8px;
+}
+
+/* 会议标题 */
+.meeting-title {
+  font-size: 16px;
+  color: #333;
+  margin: 0 0 12px;
+  font-weight: 500;
+  padding-right: 60px; /* 为右上角的标签留出空间 */
+}
+
+/* 会议详情 */
+.meeting-details {
+  font-size: 14px;
+  color: #666;
+}
+
+.meeting-details p {
+  margin-bottom: 6px;
+  display: flex;
+}
+
+.meeting-details .label {
+  color: #999;
+  width: 70px;
+}
+
+/* 空数据提示 */
+.empty-meetings {
+  padding: 30px 0;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+  background: #fff;
+  border-radius: 8px;
+  margin-top: 16px;
+} 
