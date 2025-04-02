@@ -28,7 +28,7 @@ const MeetingManagement = () => {
     // 这里先使用模拟数据
     const mockData = [
       {
-        id: 1,
+        id: 1010,
         type: '理事会议',
         form: '线下会议',
         name: '2024年度理事工作会议',
@@ -39,7 +39,7 @@ const MeetingManagement = () => {
         updatedAt: '2024-03-01 10:00:00'
       },
       {
-        id: 2,
+        id: 1009,
         type: '常务理事会议',
         form: '线上会议',
         name: '2024年第一季度常务理事会议',
@@ -50,7 +50,7 @@ const MeetingManagement = () => {
         updatedAt: '2024-03-05 15:00:00'
       },
       {
-        id: 3,
+        id: 1008,
         type: '学术会议',
         form: '线下会议',
         name: '2024年电子信息技术研讨会',
@@ -61,7 +61,7 @@ const MeetingManagement = () => {
         updatedAt: '2024-03-08 09:30:00'
       },
       {
-        id: 4,
+        id: 1007,
         type: '理事会议',
         form: '线上会议',
         name: '2024年第二季度理事会议',
@@ -72,7 +72,7 @@ const MeetingManagement = () => {
         updatedAt: '2024-03-10 16:45:00'
       },
       {
-        id: 5,
+        id: 1006,
         type: '学术会议',
         form: '线下会议',
         name: '人工智能与电子工程前沿论坛',
@@ -83,7 +83,7 @@ const MeetingManagement = () => {
         updatedAt: '2024-03-12 11:20:00'
       },
       {
-        id: 6,
+        id: 1005,
         type: '常务理事会议',
         form: '线下会议',
         name: '2024年中期工作总结会议',
@@ -94,7 +94,7 @@ const MeetingManagement = () => {
         updatedAt: '2024-03-15 14:30:00'
       },
       {
-        id: 7,
+        id: 1004,
         type: '学术会议',
         form: '线上会议',
         name: '5G通信技术发展研讨会',
@@ -105,7 +105,7 @@ const MeetingManagement = () => {
         updatedAt: '2024-03-18 10:15:00'
       },
       {
-        id: 8,
+        id: 1003,
         type: '理事会议',
         form: '线下会议',
         name: '2024年第三季度理事会议',
@@ -116,7 +116,7 @@ const MeetingManagement = () => {
         updatedAt: '2024-03-20 09:00:00'
       },
       {
-        id: 9,
+        id: 1002,
         type: '学术会议',
         form: '线下会议',
         name: '集成电路设计与制造研讨会',
@@ -127,7 +127,7 @@ const MeetingManagement = () => {
         updatedAt: '2024-03-22 16:40:00'
       },
       {
-        id: 10,
+        id: 1001,
         type: '常务理事会议',
         form: '线上会议',
         name: '2024年第三季度常务理事会议',
@@ -138,8 +138,11 @@ const MeetingManagement = () => {
         updatedAt: '2024-03-25 11:30:00'
       }
     ];
-    setMeetings(mockData);
-    setTotal(mockData.length);
+
+    // 按会议ID倒序排列
+    const sortedData = mockData.sort((a, b) => b.id - a.id);
+    setMeetings(sortedData);
+    setTotal(sortedData.length);
   };
 
   useEffect(() => {
@@ -186,7 +189,13 @@ const MeetingManagement = () => {
   // 处理创建会议提交
   const handleCreateSubmit = async (formData) => {
     // TODO: 调用后端 API 创建会议
-    console.log('创建会议:', formData);
+    // 获取当前最大ID并加1
+    const maxId = Math.max(...meetings.map(m => m.id));
+    const newMeeting = {
+      ...formData,
+      id: maxId + 1
+    };
+    console.log('创建会议:', newMeeting);
     setIsCreateModalVisible(false);
     fetchMeetings();
   };
@@ -205,6 +214,101 @@ const MeetingManagement = () => {
     setSelectedMeeting(meeting);
     setIsQRCodeModalVisible(true);
   };
+
+  const columns = [
+    {
+      title: '会议ID',
+      dataIndex: 'id',
+      key: 'id',
+      width: 220,
+      render: (id) => (
+        <span style={{ fontFamily: 'monospace', color: '#666' }}>{id}</span>
+      )
+    },
+    {
+      title: '会议类型',
+      dataIndex: 'type',
+      key: 'type',
+      width: 120
+    },
+    {
+      title: '会议形式',
+      dataIndex: 'form',
+      key: 'form',
+      width: 120
+    },
+    {
+      title: '会议名称',
+      dataIndex: 'name',
+      key: 'name',
+      width: 200
+    },
+    {
+      title: '会议时间',
+      dataIndex: 'startTime',
+      key: 'startTime',
+      width: 150,
+      render: (text) => {
+        const [start, end] = text.split('T');
+        return `${start} - ${end}`;
+      }
+    },
+    {
+      title: '会议地点',
+      dataIndex: 'location',
+      key: 'location',
+      width: 200
+    },
+    {
+      title: '报名二维码',
+      dataIndex: 'qrcode',
+      key: 'qrcode',
+      width: 100,
+      render: (text, record) => (
+        <div className="qrcode-preview" onClick={() => handleViewQRCode(record)}>
+          <QRCodeSVG
+            value={`${window.location.origin.replace('admin', 'wap')}/registration/${record.id}`}
+            size={40}
+            level="L"
+          />
+        </div>
+      )
+    },
+    {
+      title: '报名状态',
+      dataIndex: 'isRegistrationOpen',
+      key: 'isRegistrationOpen',
+      width: 120,
+      render: (text) => (
+        <span className={`status-tag ${text ? 'open' : 'closed'}`}>
+          {text ? '报名中' : '已关闭'}
+        </span>
+      )
+    },
+    {
+      title: '更新时间',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      width: 150
+    },
+    {
+      title: '操作',
+      key: 'action',
+      width: 150,
+      render: (text, record) => (
+        <div className="action-buttons">
+          <button
+            className={`toggle-button ${record.isRegistrationOpen ? 'close' : 'open'}`}
+            onClick={() => handleToggleRegistration(record.id, record.isRegistrationOpen)}
+          >
+            {record.isRegistrationOpen ? '关闭报名' : '开启报名'}
+          </button>
+          <button onClick={() => handleEdit(record)}>编辑</button>
+          <button onClick={() => handleDelete(record.id)}>删除</button>
+        </div>
+      )
+    }
+  ];
 
   return (
     <div className="meeting-management">
@@ -238,6 +342,7 @@ const MeetingManagement = () => {
         <table>
           <thead>
             <tr>
+              <th>会议ID</th>
               <th>会议类型</th>
               <th>会议形式</th>
               <th>会议名称</th>
@@ -252,6 +357,7 @@ const MeetingManagement = () => {
           <tbody>
             {meetings.map((meeting) => (
               <tr key={meeting.id}>
+                <td>{meeting.id}</td>
                 <td>{meeting.type}</td>
                 <td>{meeting.form}</td>
                 <td>{meeting.name}</td>
@@ -266,6 +372,7 @@ const MeetingManagement = () => {
                     />
                   </div>
                 </td>
+
                 <td>
                   <span className={`status-tag ${meeting.isRegistrationOpen ? 'open' : 'closed'}`}>
                     {meeting.isRegistrationOpen ? '报名中' : '已关闭'}

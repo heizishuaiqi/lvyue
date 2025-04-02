@@ -12,9 +12,62 @@
 - 部署平台：Vercel
 
 ### 1.3 技术栈
-- 前端：HTML5 + CSS3 + 原生 JavaScript
+#### 管理端（lvyue-admin）
+- 框架：React 18
+- UI组件：自定义组件
+- 状态管理：React Hooks
+- 路由：React Router v6
+- 二维码生成：qrcode.react
+- 样式：CSS Modules
+
+#### 移动端（lvyue-wap）
+- 框架：React 18
+- UI组件：自定义移动端组件
+- 状态管理：React Hooks
+- 路由：React Router v6
+- 样式：CSS Modules
+
+#### 后端服务
 - 数据库：Supabase（PostgreSQL）
-- 部署：Vercel
+- API：Supabase REST API
+- 文件存储：Supabase Storage
+- 认证：Supabase Auth
+
+### 1.4 项目结构
+#### 管理端（lvyue-admin）
+```
+src/
+├── assets/         # 静态资源
+├── components/     # 公共组件
+│   ├── MeetingModal/    # 会议创建/编辑弹窗
+│   └── QRCodeModal/     # 二维码展示弹窗
+├── layouts/        # 布局组件
+├── pages/         # 页面组件
+│   ├── AccountManagement/   # 账号管理
+│   ├── MeetingManagement/   # 会议管理
+│   ├── RegistrationManagement/  # 报名管理
+│   └── Statistics/          # 履职统计
+├── services/      # API 服务
+└── utils/         # 工具函数
+```
+
+#### 移动端（lvyue-wap）
+```
+src/
+├── assets/         # 静态资源
+├── components/     # 公共组件
+│   ├── login-form/      # 登录表单
+│   └── registration-form/  # 报名表单
+├── pages/         # 页面组件
+│   ├── Login/           # 登录页
+│   ├── Profile/         # 个人中心
+│   ├── Registration/    # 报名页
+│   ├── Statistics/      # 履职统计
+│   └── Success/         # 报名成功页
+├── router/        # 路由配置
+├── services/      # API 服务
+└── utils/         # 工具函数
+```
 
 ## 2. 用户角色
 

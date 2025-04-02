@@ -25,41 +25,45 @@
 
 .search-bar input {
   padding: 8px 12px;
-  border: 1px solid #E5E7EB;
-  border-radius: 6px;
-  font-size: 14px;
-  color: #333;
+  border: 1px solid #e5e6eb;
+  border-radius: 4px;
+  outline: none;
 }
 
 .search-bar input:focus {
-  outline: none;
   border-color: #4086FF;
-  box-shadow: 0 0 0 2px rgba(64, 134, 255, 0.1);
 }
 
-.search-bar input:disabled {
-  background-color: #F3F4F6;
-  cursor: not-allowed;
+/* 搜索按钮样式 */
+.search-btn {
+  padding: 8px 24px;
+  background: #4086FF;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-btn:hover {
+  background: #2970E6;
 }
 
 .create-btn {
-  background-color: #4086FF;
+  padding: 8px 16px;
+  background: #4086FF;
   color: white;
   border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
-  transition: all 0.3s;
 }
 
-.create-btn:hover:not(:disabled) {
-  background-color: #2B6CD9;
-}
-
-.create-btn:disabled {
-  background-color: #93C5FD;
-  cursor: not-allowed;
+.create-btn:hover {
+  background: #2970E6;
 }
 
 /* 错误提示样式 */
@@ -75,11 +79,11 @@
 
 /* 会议列表表格样式 */
 .meeting-table {
+  width: 100%;
+  overflow-x: auto;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
-  min-height: 200px;
   position: relative;
 }
 
@@ -96,88 +100,142 @@
 table {
   width: 100%;
   border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 th, td {
-  padding: 16px;
+  padding: 12px;
   text-align: left;
-  border-bottom: 1px solid #E5E7EB;
+  border-bottom: 1px solid #e5e6eb;
 }
 
 th {
-  background-color: #F9FAFB;
-  font-weight: 600;
-  color: #374151;
+  background: #f7f8fa;
+  font-weight: 500;
+  color: #333;
 }
 
-tr:hover {
-  background-color: #F9FAFB;
+td {
+  color: #666;
 }
 
-/* 操作按钮样式 */
-td button {
-  margin-right: 8px;
+/* 状态按钮 */
+.status-btn {
+  padding: 4px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.status-btn.open {
+  background: #ff4d4f;
+  color: white;
+}
+
+.status-btn.closed {
+  background: #4086FF;
+  color: white;
+}
+
+/* 报名状态标签样式 */
+.status-tag {
+  display: inline-block;
   padding: 4px 8px;
-  border: 1px solid #E5E7EB;
   border-radius: 4px;
-  background-color: #fff;
-  color: #374151;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.3s;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
 }
 
-td button:hover:not(:disabled) {
-  border-color: #4086FF;
-  color: #4086FF;
+.status-tag.open {
+  background-color: #e6f7ff;
+  color: #1890ff;
 }
 
-td button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.status-tag.closed {
+  background-color: #f5f5f5;
+  color: #999;
 }
 
-td button:last-child {
-  margin-right: 0;
-}
-
-/* 分页器样式 */
-.pagination {
+/* 操作按钮容器 */
+.action-buttons {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  margin-top: 24px;
-  padding: 16px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  flex-direction: column;
+  gap: 8px;
+  width: 90px;
 }
 
-.pagination button {
-  padding: 6px 12px;
-  border: 1px solid #E5E7EB;
+/* 操作按钮 */
+.edit-btn, .delete-btn, .toggle-btn {
+  width: 100%;
+  padding: 4px 0;
+  border: none;
   border-radius: 4px;
-  background-color: #fff;
-  color: #374151;
   cursor: pointer;
   font-size: 14px;
-  transition: all 0.3s;
+  text-align: center;
 }
 
-.pagination button:hover:not(:disabled) {
-  border-color: #4086FF;
-  color: #4086FF;
+/* 编辑和删除按钮保持原样式 */
+.edit-btn, .delete-btn {
+  color: white;
 }
 
-.pagination button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.edit-btn {
+  background: #4086FF;
 }
 
-.pagination span {
-  color: #6B7280;
-  font-size: 14px;
+.delete-btn {
+  background: #ff4d4f;
+}
+
+/* 报名状态切换按钮新样式 */
+.toggle-btn {
+  background: transparent;
+  border: 1px solid #333;
+  color: #333;
+}
+
+.toggle-btn:hover {
+  background: #f5f5f5;
+}
+
+/* 编辑和删除按钮的悬停效果保持不变 */
+.edit-btn:hover {
+  background: #2970E6;
+}
+
+.delete-btn:hover {
+  background: #ff7875;
+}
+
+/* 二维码样式 */
+.qrcode-preview {
+  cursor: pointer;
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.qrcode-preview:hover {
+  background-color: #f5f5f5;
+}
+
+/* 表格单元格样式优化 */
+.meeting-table td {
+  padding: 12px 8px;
+  vertical-align: middle;
+}
+
+/* 响应式调整 */
+@media screen and (max-width: 1200px) {
+  .action-buttons {
+    flex-direction: column;
+  }
 }
 
 /* 响应式设计 */
@@ -210,104 +268,5 @@ td button:last-child {
 
   table {
     min-width: 800px;
-  }
-}
-
-/* 二维码预览样式 */
-.qrcode-preview {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  transition: background-color 0.3s;
-}
-
-.qrcode-preview:hover {
-  background-color: #f0f0f0;
-}
-
-/* 报名状态标签样式 */
-.status-tag {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  text-align: center;
-}
-
-.status-tag.open {
-  background-color: #e6f7ff;
-  color: #1890ff;
-}
-
-.status-tag.closed {
-  background-color: #f5f5f5;
-  color: #999;
-}
-
-/* 操作按钮样式 */
-.action-buttons {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
-  min-width: 200px;
-}
-
-.action-buttons button {
-  padding: 4px 8px;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
-  transition: all 0.3s;
-  white-space: nowrap;
-}
-
-.action-buttons .toggle-button {
-  border: 1px solid transparent;
-}
-
-.action-buttons .toggle-button.open {
-  background-color: #e6f7ff;
-  border-color: #1890ff;
-  color: #1890ff;
-}
-
-.action-buttons .toggle-button.open:hover {
-  background-color: #1890ff;
-  color: white;
-}
-
-.action-buttons .toggle-button.close {
-  background-color: #fff1f0;
-  border-color: #ff4d4f;
-  color: #ff4d4f;
-}
-
-.action-buttons .toggle-button.close:hover {
-  background-color: #ff4d4f;
-  color: white;
-}
-
-.action-buttons button:not(.toggle-button):hover {
-  color: #4086FF;
-  border-color: #4086FF;
-}
-
-/* 表格单元格样式优化 */
-.meeting-table td {
-  padding: 12px 8px;
-  vertical-align: middle;
-}
-
-/* 响应式调整 */
-@media screen and (max-width: 1200px) {
-  .action-buttons {
-    flex-direction: column;
-    min-width: 100px;
   }
 } 

@@ -47,7 +47,10 @@ const Registration = () => {
       workPosition: '高级工程师',
       attendType: '本人出席',
       status: '待审核',
-      remark: ''
+      remark: '',
+      meetingId: '001',
+      meetingName: '2024年理事会议',
+      meetingDate: '2024-05-15'
     },
     {
       id: '002',
@@ -58,7 +61,10 @@ const Registration = () => {
       workPosition: '技术总监',
       attendType: '委托代表出席',
       status: '已通过',
-      remark: '已确认参加'
+      remark: '已确认参加',
+      meetingId: '004',
+      meetingName: '2024年中期工作总结会议',
+      meetingDate: '2024-06-20'
     },
     {
       id: '003',
@@ -69,7 +75,10 @@ const Registration = () => {
       workPosition: '教授',
       attendType: '本人出席',
       status: '待审核',
-      remark: ''
+      remark: '',
+      meetingId: '001',
+      meetingName: '2024年理事会议',
+      meetingDate: '2024-05-15'
     },
     {
       id: '004',
@@ -80,7 +89,10 @@ const Registration = () => {
       workPosition: '研究员',
       attendType: '本人出席',
       status: '已通过',
-      remark: '需要安排住宿'
+      remark: '需要安排住宿',
+      meetingId: '002',
+      meetingName: '2024年学术研讨会',
+      meetingDate: '2024-06-20'
     },
     {
       id: '005',
@@ -91,7 +103,10 @@ const Registration = () => {
       workPosition: '副教授',
       attendType: '委托代表出席',
       status: '待审核',
-      remark: ''
+      remark: '',
+      meetingId: '002',
+      meetingName: '2024年学术研讨会',
+      meetingDate: '2024-06-20'
     },
     {
       id: '006',
@@ -102,7 +117,10 @@ const Registration = () => {
       workPosition: '技术专家',
       attendType: '本人出席',
       status: '已通过',
-      remark: '需要特殊餐饮安排'
+      remark: '需要特殊餐饮安排',
+      meetingId: '001',
+      meetingName: '2024年理事会议',
+      meetingDate: '2024-05-15'
     },
     {
       id: '007',
@@ -113,7 +131,10 @@ const Registration = () => {
       workPosition: '高级研究员',
       attendType: '本人出席',
       status: '待审核',
-      remark: ''
+      remark: '',
+      meetingId: '004',
+      meetingName: '2024年中期工作总结会议',
+      meetingDate: '2024-06-20'
     },
     {
       id: '008',
@@ -124,7 +145,10 @@ const Registration = () => {
       workPosition: '教授',
       attendType: '委托代表出席',
       status: '已通过',
-      remark: '委托代表已确认'
+      remark: '委托代表已确认',
+      meetingId: '001',
+      meetingName: '2024年理事会议',
+      meetingDate: '2024-05-15'
     },
     {
       id: '009',
@@ -135,7 +159,10 @@ const Registration = () => {
       workPosition: '技术总监',
       attendType: '本人出席',
       status: '待审核',
-      remark: ''
+      remark: '',
+      meetingId: '003',
+      meetingName: '2024年电子信息技术研讨会',
+      meetingDate: '2024-04-10'
     },
     {
       id: '010',
@@ -146,7 +173,10 @@ const Registration = () => {
       workPosition: '副教授',
       attendType: '本人出席',
       status: '已通过',
-      remark: '需要提前安排交通'
+      remark: '需要提前安排交通',
+      meetingId: '003',
+      meetingName: '2024年电子信息技术研讨会',
+      meetingDate: '2024-04-10'
     }
   ]);
 
@@ -211,6 +241,8 @@ const Registration = () => {
               <th>学会职务</th>
               <th>工作单位</th>
               <th>工作职务</th>
+              <th>会议名称</th>
+              <th>会议时间</th>
               <th>出席类型</th>
               <th>审核状态</th>
               <th>备注</th>
@@ -225,6 +257,8 @@ const Registration = () => {
                 <td>{registration.role}</td>
                 <td>{registration.workUnit}</td>
                 <td>{registration.workPosition}</td>
+                <td>{registration.meetingName}</td>
+                <td>{registration.meetingDate}</td>
                 <td>{registration.attendType}</td>
                 <td>
                   <span className={`status-tag ${registration.status === '已通过' ? 'success' : 'pending'}`}>

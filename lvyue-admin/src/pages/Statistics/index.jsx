@@ -19,7 +19,8 @@ const Statistics = () => {
       workPosition: '高级工程师',
       meetingCounts: {
         council: 2,  // 理事会议
-        academic: 1  // 学术会议
+        academic: 1,  // 学术会议
+        executive: 1  // 常务理事会议
       }
     },
     {
@@ -31,7 +32,8 @@ const Statistics = () => {
       workPosition: '技术总监',
       meetingCounts: {
         council: 3,
-        academic: 2
+        academic: 2,
+        executive: 2
       }
     },
     {
@@ -43,7 +45,8 @@ const Statistics = () => {
       workPosition: '教授',
       meetingCounts: {
         council: 1,
-        academic: 3
+        academic: 3,
+        executive: 1
       }
     },
     {
@@ -55,7 +58,8 @@ const Statistics = () => {
       workPosition: '研究员',
       meetingCounts: {
         council: 2,
-        academic: 2
+        academic: 2,
+        executive: 0
       }
     },
     {
@@ -67,7 +71,8 @@ const Statistics = () => {
       workPosition: '副教授',
       meetingCounts: {
         council: 1,
-        academic: 4
+        academic: 4,
+        executive: 0
       }
     },
     {
@@ -79,7 +84,8 @@ const Statistics = () => {
       workPosition: '技术专家',
       meetingCounts: {
         council: 3,
-        academic: 1
+        academic: 1,
+        executive: 1
       }
     },
     {
@@ -91,7 +97,8 @@ const Statistics = () => {
       workPosition: '高级研究员',
       meetingCounts: {
         council: 4,
-        academic: 2
+        academic: 2,
+        executive: 3
       }
     },
     {
@@ -103,7 +110,8 @@ const Statistics = () => {
       workPosition: '教授',
       meetingCounts: {
         council: 2,
-        academic: 3
+        academic: 3,
+        executive: 1
       }
     },
     {
@@ -115,7 +123,8 @@ const Statistics = () => {
       workPosition: '技术总监',
       meetingCounts: {
         council: 1,
-        academic: 5
+        academic: 5,
+        executive: 0
       }
     },
     {
@@ -127,7 +136,8 @@ const Statistics = () => {
       workPosition: '副教授',
       meetingCounts: {
         council: 2,
-        academic: 3
+        academic: 3,
+        executive: 0
       }
     }
   ]);
@@ -190,6 +200,7 @@ const Statistics = () => {
               <th>工作单位</th>
               <th>工作职务</th>
               <th>理事会议次数</th>
+              <th>常务理事会议次数</th>
               <th>学术会议次数</th>
               <th>操作</th>
             </tr>
@@ -203,6 +214,7 @@ const Statistics = () => {
                 <td>{item.workUnit}</td>
                 <td>{item.workPosition}</td>
                 <td>{item.meetingCounts.council}</td>
+                <td>{item.meetingCounts.executive}</td>
                 <td>{item.meetingCounts.academic}</td>
                 <td>
                   <div className="action-buttons">
