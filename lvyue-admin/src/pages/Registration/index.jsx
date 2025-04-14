@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import RegistrationDetailModal from '../../components/RegistrationDetailModal';
+import AuditModal from '../../components/AuditModal';
+import SyncModal from '../../components/SyncModal';
 import './style.css';
 
 const Registration = () => {
@@ -7,6 +10,18 @@ const Registration = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
   const [selectedMeeting, setSelectedMeeting] = useState(null);
+
+  // 详情弹窗状态
+  const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
+  const [selectedRegistration, setSelectedRegistration] = useState(null);
+
+  // 审核弹窗状态
+  const [isAuditModalVisible, setIsAuditModalVisible] = useState(false);
+  const [selectedAuditRegistration, setSelectedAuditRegistration] = useState(null);
+  
+  // 同步弹窗状态
+  const [isSyncModalVisible, setIsSyncModalVisible] = useState(false);
+  const [selectedSyncRegistration, setSelectedSyncRegistration] = useState(null);
 
   // 模拟会议数据
   const [meetings] = useState([
@@ -37,146 +52,198 @@ const Registration = () => {
   ]);
 
   // 模拟报名数据
-  const [registrations] = useState([
+  const [registrations, setRegistrations] = useState([
     {
       id: '001',
       name: '张三',
       phone: '13800138000',
-      role: '理事',
+      selectedRole: '理事',
+      societyPosition: '副会长',
       workUnit: '中国电子科技集团公司',
       workPosition: '高级工程师',
       attendType: '本人出席',
-      status: '待审核',
-      remark: '',
+      status: '审核通过',
+      syncStatus: '未同步',
+      registerTime: '2024-03-01 10:24:36',
       meetingId: '001',
       meetingName: '2024年理事会议',
-      meetingDate: '2024-05-15'
+      meetingType: '理事会议',
+      meetingDate: '2024-05-15',
+      meetingLocation: '总部大楼3层会议室A'
     },
     {
       id: '002',
       name: '李四',
       phone: '13900139000',
-      role: '常务理事',
+      selectedRole: '常务理事',
+      societyPosition: '会长',
       workUnit: '华为技术有限公司',
       workPosition: '技术总监',
       attendType: '委托代表出席',
-      status: '已通过',
-      remark: '已确认参加',
+      status: '审核通过',
+      syncStatus: '未同步',
+      registerTime: '2024-03-02 14:35:22',
+      delegateName: '刘小明',
+      delegatePhone: '13911112222',
+      delegateUnit: '华为技术有限公司',
+      delegatePosition: '高级研究员',
       meetingId: '004',
       meetingName: '2024年中期工作总结会议',
-      meetingDate: '2024-06-20'
+      meetingType: '常务理事会议',
+      meetingDate: '2024-06-20',
+      meetingLocation: '北京国际会议中心'
     },
     {
       id: '003',
       name: '王五',
       phone: '13700137000',
-      role: '监事',
+      selectedRole: '监事',
+      societyPosition: '监事长',
       workUnit: '清华大学',
       workPosition: '教授',
       attendType: '本人出席',
-      status: '待审核',
-      remark: '',
+      status: '审核通过',
+      syncStatus: '未同步',
+      registerTime: '2024-03-05 09:17:43',
       meetingId: '001',
       meetingName: '2024年理事会议',
-      meetingDate: '2024-05-15'
+      meetingType: '监事会议',
+      meetingDate: '2024-05-15',
+      meetingLocation: '总部大楼3层会议室A'
     },
     {
       id: '004',
       name: '赵六',
       phone: '13600136000',
-      role: '分支机构负责人',
+      selectedRole: '分支机构负责人',
+      societyPosition: '理事',
       workUnit: '中国科学院计算技术研究所',
       workPosition: '研究员',
       attendType: '本人出席',
-      status: '已通过',
-      remark: '需要安排住宿',
+      status: '审核通过',
+      syncStatus: '已同步',
+      registerTime: '2024-03-10 15:45:12',
       meetingId: '002',
       meetingName: '2024年学术研讨会',
-      meetingDate: '2024-06-20'
+      meetingType: '学术会议',
+      meetingDate: '2024-06-20',
+      meetingLocation: '上海科技馆'
     },
     {
       id: '005',
       name: '钱七',
       phone: '13500135000',
-      role: '地方学会负责人',
+      selectedRole: '地方学会负责人',
+      societyPosition: '秘书长',
       workUnit: '上海交通大学',
       workPosition: '副教授',
       attendType: '委托代表出席',
-      status: '待审核',
-      remark: '',
+      status: '审核通过',
+      syncStatus: '未同步',
+      registerTime: '2024-03-12 11:23:57',
+      delegateName: '张小花',
+      delegatePhone: '13822223333',
+      delegateUnit: '上海交通大学',
+      delegatePosition: '讲师',
       meetingId: '002',
       meetingName: '2024年学术研讨会',
-      meetingDate: '2024-06-20'
+      meetingType: '学术会议',
+      meetingDate: '2024-06-20',
+      meetingLocation: '上海科技馆'
     },
     {
       id: '006',
       name: '孙八',
       phone: '13400134000',
-      role: '理事',
+      selectedRole: '理事',
+      societyPosition: '常务理事',
       workUnit: '阿里巴巴集团',
       workPosition: '技术专家',
       attendType: '本人出席',
-      status: '已通过',
-      remark: '需要特殊餐饮安排',
+      status: '审核未通过',
+      syncStatus: '未同步',
+      registerTime: '2024-03-15 16:38:21',
       meetingId: '001',
       meetingName: '2024年理事会议',
-      meetingDate: '2024-05-15'
+      meetingType: '理事会议',
+      meetingDate: '2024-05-15',
+      meetingLocation: '总部大楼3层会议室A'
     },
     {
       id: '007',
       name: '周九',
       phone: '13300133000',
-      role: '常务理事',
+      selectedRole: '常务理事',
+      societyPosition: '副秘书长',
       workUnit: '腾讯科技',
       workPosition: '高级研究员',
       attendType: '本人出席',
-      status: '待审核',
-      remark: '',
+      status: '审核通过',
+      syncStatus: '未同步',
+      registerTime: '2024-03-18 10:12:44',
       meetingId: '004',
       meetingName: '2024年中期工作总结会议',
-      meetingDate: '2024-06-20'
+      meetingType: '常务理事会议',
+      meetingDate: '2024-06-20',
+      meetingLocation: '北京国际会议中心'
     },
     {
       id: '008',
       name: '吴十',
       phone: '13200132000',
-      role: '监事',
+      selectedRole: '监事',
+      societyPosition: '监事',
       workUnit: '北京邮电大学',
       workPosition: '教授',
       attendType: '委托代表出席',
-      status: '已通过',
-      remark: '委托代表已确认',
+      status: '审核通过',
+      syncStatus: '已同步',
+      registerTime: '2024-03-20 14:56:32',
+      delegateName: '李小龙',
+      delegatePhone: '13733334444',
+      delegateUnit: '北京邮电大学',
+      delegatePosition: '副教授',
       meetingId: '001',
       meetingName: '2024年理事会议',
-      meetingDate: '2024-05-15'
+      meetingType: '监事会议',
+      meetingDate: '2024-05-15',
+      meetingLocation: '总部大楼3层会议室A'
     },
     {
       id: '009',
       name: '郑十一',
       phone: '13100131000',
-      role: '分支机构负责人',
+      selectedRole: '分支机构负责人',
+      societyPosition: '副主任',
       workUnit: '中国移动通信集团',
       workPosition: '技术总监',
       attendType: '本人出席',
-      status: '待审核',
-      remark: '',
+      status: '审核通过',
+      syncStatus: '未同步',
+      registerTime: '2024-03-22 09:45:18',
       meetingId: '003',
       meetingName: '2024年电子信息技术研讨会',
-      meetingDate: '2024-04-10'
+      meetingType: '学术会议',
+      meetingDate: '2024-04-10',
+      meetingLocation: '深圳会展中心'
     },
     {
       id: '010',
       name: '王十二',
       phone: '13000130000',
-      role: '地方学会负责人',
+      selectedRole: '地方学会负责人',
+      societyPosition: '理事',
       workUnit: '浙江大学',
       workPosition: '副教授',
       attendType: '本人出席',
-      status: '已通过',
-      remark: '需要提前安排交通',
+      status: '审核未通过',
+      syncStatus: '未同步',
+      registerTime: '2024-03-25 16:27:39',
       meetingId: '003',
       meetingName: '2024年电子信息技术研讨会',
-      meetingDate: '2024-04-10'
+      meetingType: '学术会议',
+      meetingDate: '2024-04-10',
+      meetingLocation: '深圳会展中心'
     }
   ]);
 
@@ -192,10 +259,63 @@ const Registration = () => {
     setCurrentPage(1);
   };
 
-  // 处理审核状态
-  const handleStatusChange = (registrationId, newStatus) => {
-    // TODO: 实现审核状态更新
-    console.log('更新审核状态:', registrationId, newStatus);
+  // 处理审核
+  const handleAudit = (status, registration) => {
+    // 确保status只能是1(审核通过)或2(审核未通过)
+    const statusText = status === 2 ? '审核未通过' : '审核通过';
+    
+    // TODO: 调用后端 API 更新审核状态
+    console.log('更新审核状态:', registration.id, statusText);
+    
+    // 更新本地状态
+    const updatedRegistrations = registrations.map(reg => 
+      reg.id === registration.id ? { 
+        ...reg, 
+        status: statusText
+      } : reg
+    );
+    setRegistrations(updatedRegistrations);
+    
+    // 关闭弹窗
+    setIsAuditModalVisible(false);
+    setSelectedAuditRegistration(null);
+  };
+  
+  // 处理同步
+  const handleSync = (registrationId, syncStatus, updatedRegistration) => {
+    // TODO: 调用后端 API 更新同步状态
+    console.log('更新同步状态:', registrationId, syncStatus);
+    console.log('更新后的工作单位和职务:', updatedRegistration.workUnit, updatedRegistration.workPosition);
+    
+    // 更新本地状态
+    const updatedRegistrations = registrations.map(reg => 
+      reg.id === registrationId ? { 
+        ...reg, 
+        syncStatus,
+        // 更新工作单位和工作职务
+        workUnit: updatedRegistration.workUnit,
+        workPosition: updatedRegistration.workPosition
+      } : reg
+    );
+    setRegistrations(updatedRegistrations);
+  };
+
+  // 处理打开审核弹窗
+  const handleOpenAudit = (registration) => {
+    setSelectedAuditRegistration(registration);
+    setIsAuditModalVisible(true);
+  };
+  
+  // 处理打开同步弹窗
+  const handleOpenSync = (registration) => {
+    setSelectedSyncRegistration(registration);
+    setIsSyncModalVisible(true);
+  };
+
+  // 处理查看详情
+  const handleViewDetail = (registration) => {
+    setSelectedRegistration(registration);
+    setIsDetailModalVisible(true);
   };
 
   return (
@@ -238,14 +358,15 @@ const Registration = () => {
             <tr>
               <th>姓名</th>
               <th>手机号码</th>
+              <th>身份</th>
               <th>学会职务</th>
-              <th>工作单位</th>
-              <th>工作职务</th>
+              <th>单位名称</th>
+              <th>单位职务</th>
               <th>会议名称</th>
               <th>会议时间</th>
-              <th>出席类型</th>
+              <th>出席方式</th>
               <th>审核状态</th>
-              <th>备注</th>
+              <th>同步状态</th>
               <th>操作</th>
             </tr>
           </thead>
@@ -254,38 +375,47 @@ const Registration = () => {
               <tr key={registration.id}>
                 <td>{registration.name}</td>
                 <td>{registration.phone}</td>
-                <td>{registration.role}</td>
+                <td>{registration.selectedRole}</td>
+                <td>{registration.societyPosition}</td>
                 <td>{registration.workUnit}</td>
                 <td>{registration.workPosition}</td>
                 <td>{registration.meetingName}</td>
                 <td>{registration.meetingDate}</td>
                 <td>{registration.attendType}</td>
                 <td>
-                  <span className={`status-tag ${registration.status === '已通过' ? 'success' : 'pending'}`}>
+                  <span className={`status-tag ${
+                    registration.status === '审核通过' ? 'success' : 'reject'
+                  }`}>
                     {registration.status}
                   </span>
                 </td>
-                <td>{registration.remark}</td>
+                <td>
+                  <span className={`status-tag ${
+                    registration.syncStatus === '已同步' ? 'success' : 'pending'
+                  }`}>
+                    {registration.syncStatus}
+                  </span>
+                </td>
                 <td>
                   <div className="action-buttons">
-                    {registration.status === '待审核' ? (
-                      <>
-                        <button 
-                          className="table-button success"
-                          onClick={() => handleStatusChange(registration.id, '已通过')}
-                        >
-                          通过
-                        </button>
-                        <button 
-                          className="table-button danger"
-                          onClick={() => handleStatusChange(registration.id, '已拒绝')}
-                        >
-                          拒绝
-                        </button>
-                      </>
-                    ) : (
-                      <button className="table-button">查看详情</button>
-                    )}
+                    <button 
+                      className="table-button primary"
+                      onClick={() => handleOpenAudit(registration)}
+                    >
+                      审核
+                    </button>
+                    <button 
+                      className="table-button info"
+                      onClick={() => handleViewDetail(registration)}
+                    >
+                      详情
+                    </button>
+                    <button 
+                      className="table-button success"
+                      onClick={() => handleOpenSync(registration)}
+                    >
+                      同步
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -317,6 +447,48 @@ const Registration = () => {
           </button>
         </div>
       </div>
+
+      {/* 报名详情弹窗 */}
+      <RegistrationDetailModal
+        visible={isDetailModalVisible}
+        registration={selectedRegistration}
+        onClose={() => {
+          setIsDetailModalVisible(false);
+          setSelectedRegistration(null);
+        }}
+      />
+
+      {/* 审核弹窗 */}
+      <AuditModal
+        visible={isAuditModalVisible}
+        userInfo={{
+          name: selectedAuditRegistration?.name,
+          unit: selectedAuditRegistration?.workUnit,
+          position: selectedAuditRegistration?.workPosition,
+          phone: selectedAuditRegistration?.phone
+        }}
+        initialStatus={selectedAuditRegistration?.status === '审核未通过' ? 2 : 1}
+        onClose={() => {
+          setIsAuditModalVisible(false);
+          setSelectedAuditRegistration(null);
+        }}
+        onConfirm={({status}) => {
+          if (selectedAuditRegistration) {
+            handleAudit(status, selectedAuditRegistration);
+          }
+        }}
+      />
+      
+      {/* 同步弹窗 */}
+      <SyncModal
+        visible={isSyncModalVisible}
+        registration={selectedSyncRegistration}
+        onClose={() => {
+          setIsSyncModalVisible(false);
+          setSelectedSyncRegistration(null);
+        }}
+        onSync={handleSync}
+      />
     </div>
   );
 };

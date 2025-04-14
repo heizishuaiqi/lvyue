@@ -174,58 +174,64 @@ const StatisticsPage = () => {
     navigate('/profile');
   };
 
+  // 处理返回
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className="statistics-page">
-      {/* 标题栏 */}
+      {/* 顶部栏 */}
       <div className="statistics-header">
-        <h1>履职统计</h1>
-        <button className="profile-btn" onClick={handleGoToProfile}>
-          <svg viewBox="0 0 24 24" width="24" height="24">
-            <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
-          </svg>
+        <button className="back-button" onClick={handleBack}>
         </button>
+        <h1>履职统计</h1>
+        <div className="placeholder"></div>
       </div>
 
-      {/* 会议统计卡片 */}
-      <div className="statistics-card">
-        <h3>履职情况统计</h3>
-        <div className="statistics-grid">
-          {renderStatisticsItems()}
+      {/* 统计内容 */}
+      <div className="statistics-content">
+        {/* 会议统计卡片 */}
+        <div className="statistics-card">
+          <h3>履职情况统计</h3>
+          <div className="statistics-grid">
+            {renderStatisticsItems()}
+          </div>
         </div>
-      </div>
 
-      {/* 参会记录模块 */}
-      <div className="meetings-section">
-        <h3 className="section-title">参会记录</h3>
-        
-        {meetings.length > 0 ? (
-          <div className="meeting-cards">
-            {meetings.map(meeting => (
-              <div key={meeting.id} className="meeting-card">
-                <div className="meeting-tag">{meeting.type}</div>
-                <h4 className="meeting-title">{meeting.name}</h4>
-                <div className="meeting-details">
-                  <p>
-                    <span className="label">时间：</span>
-                    <span>{meeting.date}</span>
-                  </p>
-                  <p>
-                    <span className="label">地点：</span>
-                    <span>{meeting.location}</span>
-                  </p>
-                  <p>
-                    <span className="label">出席方式：</span>
-                    <span>{meeting.attendType}</span>
-                  </p>
+        {/* 参会记录模块 */}
+        <div className="meetings-section">
+          <h3 className="section-title">参会记录</h3>
+          
+          {meetings.length > 0 ? (
+            <div className="meeting-cards">
+              {meetings.map(meeting => (
+                <div key={meeting.id} className="meeting-card">
+                  <div className="meeting-tag">{meeting.type}</div>
+                  <h4 className="meeting-title">{meeting.name}</h4>
+                  <div className="meeting-details">
+                    <p>
+                      <span className="label">时间：</span>
+                      <span>{meeting.date}</span>
+                    </p>
+                    <p>
+                      <span className="label">地点：</span>
+                      <span>{meeting.location}</span>
+                    </p>
+                    <p>
+                      <span className="label">出席方式：</span>
+                      <span>{meeting.attendType}</span>
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="empty-meetings">
-            <p>暂无参会记录</p>
-          </div>
-        )}
+              ))}
+            </div>
+          ) : (
+            <div className="empty-meetings">
+              <p>暂无参会记录</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

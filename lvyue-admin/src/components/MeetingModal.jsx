@@ -53,6 +53,7 @@ const MeetingModal = ({ visible, onClose, onSubmit, initialData }) => {
               <option value="">请选择会议类型</option>
               <option value="理事会议">理事会议</option>
               <option value="常务理事会议">常务理事会议</option>
+              <option value="监事会议">监事会议</option>
               <option value="学术会议">学术会议</option>
             </select>
           </div>

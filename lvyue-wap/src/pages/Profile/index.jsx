@@ -14,24 +14,26 @@ const ProfilePage = () => {
   });
 
   useEffect(() => {
-    // 获取登录时保存的账号名称和角色
+    // 获取登录时保存的token和用户信息
+    const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
     const userRole = localStorage.getItem('userRole');
     
     // 如果没有登录信息，则重定向到登录页面
-    if (!username) {
+    if (!token) {
+      console.log('未检测到登录状态，准备跳转到登录页面...');
       navigate('/login', { replace: true });
       return;
     }
     
     // 更新用户信息
     setUserInfo({
-      name: username,
-      phone: username.length === 11 ? username : '13800138000', // 如果用户名是手机号则显示，否则显示默认号码
+      name: username || '',
+      phone: username?.length === 11 ? username : '', // 如果用户名是手机号则显示
       workUnit: '中国电子学会',
       workPosition: '部门经理',
       societyPosition: userRole || '会员',
-      account: username
+      account: username || ''
     });
   }, [navigate]);
 
@@ -42,9 +44,11 @@ const ProfilePage = () => {
 
   // 处理退出登录
   const handleLogout = () => {
-    // 清除本地存储的登录信息
+    // 清除本地存储的所有登录信息
+    localStorage.removeItem('token');
     localStorage.removeItem('username');
     localStorage.removeItem('userRole');
+    localStorage.removeItem('userInfo');
     
     // 跳转到登录页面
     navigate('/login', { replace: true });
@@ -54,11 +58,7 @@ const ProfilePage = () => {
     <div className="profile-page">
       {/* 标题栏 */}
       <div className="profile-header">
-        <button className="back-btn" onClick={handleBack}>
-          <svg viewBox="0 0 24 24" width="24" height="24">
-            <path fill="currentColor" d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" />
-          </svg>
-        </button>
+        <button className="back-btn" onClick={handleBack}></button>
         <h1>个人中心</h1>
         <div className="placeholder"></div>
       </div>

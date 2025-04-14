@@ -1,0 +1,168 @@
+.detail-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.detail-modal {
+  background: white;
+  border-radius: 8px;
+  width: 700px;
+  max-width: 90%;
+  border: 1px solid #e5e7eb;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1F2937;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #6B7280;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.modal-content {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+  max-height: 70vh;
+}
+
+.section {
+  margin-bottom: 24px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  font-weight: 500;
+  font-size: 15px;
+  color: #111827;
+  margin-bottom: 12px;
+  padding-left: 8px;
+  border-left: 3px solid #4086FF;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .info-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .detail-modal {
+    width: 700px;
+    max-width: 90%;
+  }
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-item label {
+  color: #6B7280;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.info-item span {
+  color: #1F2937;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.status-tag {
+  font-weight: 500;
+}
+
+.status-tag.success {
+  color: #10B981;
+}
+
+.status-tag.reject {
+  color: #EF4444;
+}
+
+.status-tag.pending {
+  color: #F59E0B;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 20px 16px 20px;
+}
+
+.close-btn {
+  background: white;
+  border: 1px solid #d9d9d9;
+  color: #666;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  border-color: #bbb;
+}
+
+@media screen and (max-width: 640px) {
+  .detail-modal {
+    width: 95%;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 修复滚动条问题 */
+.modal-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  width: 5px;
+} 

@@ -22,6 +22,12 @@ const MainLayout = () => {
       icon: '📅'
     },
     {
+      key: 'academic',
+      path: '/academic',
+      label: '学术会议',
+      icon: '🎓'
+    },
+    {
       key: 'registration',
       path: '/registration',
       label: '报名信息',
@@ -29,7 +35,7 @@ const MainLayout = () => {
     },
     {
       key: 'statistics',
-      path: '/statistics',
+      path: '/statistics/personal',
       label: '履职统计',
       icon: '📊'
     }
@@ -82,7 +88,7 @@ const MainLayout = () => {
       <div className="main-content">
         <header className="header">
           <div className="user-info">
-            <span className="welcome">欢迎使用中国电子学会履职系统</span>
+            <span className="welcome" title="欢迎使用中国电子学会履职系统">欢迎使用中国电子学会履职系统</span>
             <span className="user">管理员</span>
           </div>
         </header>
@@ -114,6 +120,20 @@ const MainLayout = () => {
           </div>
         </div>
       )}
+      <style>{`
+        .main-content {
+          display: flex;
+          flex-direction: column;
+        }
+        .header {
+          border-bottom: none;
+        }
+        .content {
+          display: flex;
+          flex-direction: column;
+          padding-top: 0;
+        }
+      `}</style>
     </div>
   );
 };

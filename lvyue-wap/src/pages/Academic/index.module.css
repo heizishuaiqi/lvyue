@@ -1,0 +1,239 @@
+.container {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* 顶部栏样式 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: #fff;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.backButton {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+}
+
+.backButton::before {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-left: 2px solid #333;
+  border-bottom: 2px solid #333;
+  transform: rotate(45deg);
+  margin-right: -3px;
+}
+
+.backIcon {
+  font-size: 20px;
+  color: #333;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1d2129;
+}
+
+.placeholder {
+  width: 32px;
+}
+
+/* 自主申报按钮 */
+.declareButton {
+  border: none;
+  background: none;
+  color: #4086FF;
+  font-size: 14px;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* 筛选区域样式 */
+.filterSection {
+  padding: 16px 16px 8px;
+  width: 100%;
+}
+
+.yearSelect {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #e5e6eb;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #333;
+  font-size: 14px;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  cursor: pointer;
+}
+
+.yearSelect:hover {
+  border-color: #4086FF;
+}
+
+.yearSelect:focus {
+  border-color: #4086FF;
+  box-shadow: 0 0 0 2px rgba(64, 134, 255, 0.1);
+}
+
+/* 内容区样式 */
+.content {
+  flex: 1;
+  padding: 8px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 会议卡片样式 */
+.meetingCard {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: visible;
+}
+
+/* 自主申报角标 */
+.selfDeclaredBadge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: rgba(64, 134, 255, 0.1);
+  color: #4086FF;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 0 8px 0 4px;
+  font-weight: normal;
+}
+
+.meetingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.meetingType {
+  font-size: 13px;
+  color: #666;
+  background-color: #f5f7fa;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.status {
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.statusRegistering {
+  color: #52c41a;
+  background-color: #f6ffed;
+}
+
+.statusClosed {
+  color: #ff4d4f;
+  background-color: #fff2f0;
+}
+
+.statusFinished {
+  color: #999;
+  background-color: #f5f5f5;
+}
+
+.meetingTitle {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1d2129;
+  margin: 0;
+}
+
+.meetingInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #4E5969;
+  font-size: 14px;
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.infoIcon {
+  font-size: 16px;
+}
+
+/* 出席状态选择组样式 */
+.attendanceGroup {
+  display: flex;
+  gap: 24px;
+  padding: 8px 0;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #1d2129;
+  cursor: pointer;
+}
+
+.radioLabel input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* 响应式设计 */
+@media screen and (min-width: 768px) {
+  .filterSection {
+    padding: 16px 40px 8px;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .content {
+    padding: 8px 40px 24px;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .meetingCard {
+    padding: 24px;
+  }
+} 

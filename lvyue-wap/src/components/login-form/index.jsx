@@ -123,6 +123,7 @@ const LoginForm = ({ onSuccess, loading, setLoading }) => {
           // 保存账号信息和用户角色到本地存储
           localStorage.setItem('username', formData.phone);
           localStorage.setItem('userRole', '常务理事');
+          localStorage.setItem('token', 'dummy_token'); // 添加token存储
           
           // 模拟登录延迟
           await new Promise(resolve => setTimeout(resolve, 1000));
@@ -135,6 +136,7 @@ const LoginForm = ({ onSuccess, loading, setLoading }) => {
           // 保存账号信息和用户角色到本地存储
           localStorage.setItem('username', formData.phone);
           localStorage.setItem('userRole', '理事');
+          localStorage.setItem('token', 'dummy_token'); // 添加token存储
           
           // 模拟登录延迟
           await new Promise(resolve => setTimeout(resolve, 1000));
@@ -149,10 +151,11 @@ const LoginForm = ({ onSuccess, loading, setLoading }) => {
           }));
         }
       } else {
-        // 手机号验证码登录逻辑保持不变
+        // 手机号验证码登录逻辑
         await new Promise(resolve => setTimeout(resolve, 1000)); // 模拟API调用
-        localStorage.setItem('username', formData.phone); // 保存手机号作为用户名
-        localStorage.setItem('userRole', '常务理事'); // 默认为常务理事角色
+        localStorage.setItem('username', formData.phone);
+        localStorage.setItem('userRole', '常务理事');
+        localStorage.setItem('token', 'dummy_token'); // 添加token存储
         onSuccess();
       }
     } catch (error) {

@@ -24,15 +24,24 @@ a:hover {
 
 body {
   margin: 0;
+  padding: 0;
   display: flex;
-  place-items: center;
-  min-width: 320px;
   min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  margin: 0;
 }
 
 button {
@@ -52,6 +61,25 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* 消除页面间隙 */
+#root, .main-layout, .main-content, .content, .account-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* 消除导航栏和内容区域的间隙 */
+.header + .content {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* 消除内容区域和子组件的间隙 */
+.content > * {
+  margin-top: 0;
+  padding-top: 0;
 }
 
 @media (prefers-color-scheme: light) {

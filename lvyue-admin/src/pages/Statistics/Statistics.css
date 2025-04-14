@@ -1,0 +1,190 @@
+/* 统计页面容器 */
+.statistics-container {
+  padding: 20px 0;
+}
+
+/* 统计布局 */
+.statistics-layout {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.statistics-menu {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+  background-color: #fff;
+  padding: 0 20px;
+}
+
+.statistics-menu .ant-menu {
+  border-bottom: none;
+}
+
+.statistics-content {
+  flex: 1;
+}
+
+/* 筛选卡片 */
+.filter-card {
+  margin-bottom: 20px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+  margin-bottom: 8px;
+}
+
+.filter-label {
+  margin-right: 8px;
+  font-size: 14px;
+  color: #606266;
+  white-space: nowrap;
+}
+
+.filter-buttons {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+/* 数据表格卡片 */
+.data-card {
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1f2f3d;
+  display: flex;
+  align-items: center;
+}
+
+/* 会议详情弹窗样式 */
+.meeting-detail-info {
+  margin-bottom: 16px;
+}
+
+.detail-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.detail-item {
+  display: flex;
+  margin-right: 48px;
+  min-width: 240px;
+  margin-bottom: 8px;
+}
+
+.detail-label {
+  color: #606266;
+  margin-right: 8px;
+  min-width: 80px;
+  text-align: right;
+}
+
+.detail-value {
+  color: #303133;
+  font-weight: 500;
+}
+
+.meeting-detail-divider {
+  height: 1px;
+  background-color: #e8e8e8;
+  margin: 24px 0;
+}
+
+.meeting-attendees h3 {
+  font-size: 16px;
+  margin-bottom: 16px;
+  color: #303133;
+}
+
+/* 响应式适配 */
+@media screen and (max-width: 992px) {
+  .filter-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .filter-item {
+    margin-bottom: 16px;
+    width: 100%;
+  }
+  
+  .filter-buttons {
+    margin-left: 0;
+    margin-top: 8px;
+    width: 100%;
+  }
+}
+
+/* 个人统计页面特定样式 */
+.personal-statistics-container {
+  padding: 20px 0;
+}
+
+/* 会议统计页面特定样式 */
+.meeting-statistics-container {
+  padding: 20px 0;
+}
+
+.attendance-rate-good {
+  color: #52c41a;
+}
+
+.attendance-rate-warning {
+  color: #faad14;
+}
+
+.attendance-rate-poor {
+  color: #f5222d;
+}
+
+/* 图表容器 */
+.charts-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  gap: 20px;
+}
+
+.chart-card {
+  flex: 1;
+  min-width: 300px;
+  min-height: 280px;
+  margin-bottom: 20px;
+}
+
+.chart-title {
+  font-size: 14px;
+  margin-bottom: 16px;
+  color: #606266;
+}
+
+.chart-container {
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 导出按钮 */
+.export-button {
+  margin-left: 8px;
+} 

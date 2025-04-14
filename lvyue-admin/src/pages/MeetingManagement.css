@@ -165,51 +165,40 @@ td {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  width: 90px;
 }
 
-/* 操作按钮 */
-.edit-btn, .delete-btn, .toggle-btn {
-  width: 100%;
-  padding: 4px 0;
+/* 操作按钮基础样式 */
+.action-buttons button {
+  background: none;
   border: none;
-  border-radius: 4px;
+  padding: 4px 8px;
   cursor: pointer;
   font-size: 14px;
-  text-align: center;
+  transition: all 0.3s;
 }
 
-/* 编辑和删除按钮保持原样式 */
-.edit-btn, .delete-btn {
-  color: white;
+/* 开启/关闭报名按钮 */
+.action-buttons .toggle-button.open {
+  color: #4086FF;
 }
 
-.edit-btn {
-  background: #4086FF;
+.action-buttons .toggle-button.close {
+  color: #ff4d4f;
 }
 
-.delete-btn {
-  background: #ff4d4f;
+/* 编辑按钮 */
+.action-buttons button:nth-child(2) {
+  color: #4086FF;
 }
 
-/* 报名状态切换按钮新样式 */
-.toggle-btn {
-  background: transparent;
-  border: 1px solid #333;
-  color: #333;
+/* 删除按钮 */
+.action-buttons button:nth-child(3) {
+  color: #ff4d4f;
 }
 
-.toggle-btn:hover {
-  background: #f5f5f5;
-}
-
-/* 编辑和删除按钮的悬停效果保持不变 */
-.edit-btn:hover {
-  background: #2970E6;
-}
-
-.delete-btn:hover {
-  background: #ff7875;
+/* 按钮悬停效果 */
+.action-buttons button:hover {
+  opacity: 0.8;
 }
 
 /* 二维码样式 */

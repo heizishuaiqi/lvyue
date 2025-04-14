@@ -5,7 +5,10 @@ import Login from './pages/Login';
 import Account from './pages/Account/index';
 import MeetingManagement from './pages/MeetingManagement';
 import Registration from './pages/Registration/index';
-import Statistics from './pages/Statistics/index';
+import StatisticsLayout from './pages/Statistics/index';
+import PersonalStatistics from './pages/Statistics/PersonalStatistics';
+import MeetingStatistics from './pages/Statistics/MeetingStatistics';
+import AcademicMeeting from './pages/AcademicMeeting/index';
 import './App.css';
 
 const App = () => {
@@ -28,8 +31,15 @@ const App = () => {
           <Route index element={<Navigate to="/account" replace />} />
           <Route path="account" element={<Account />} />
           <Route path="meeting" element={<MeetingManagement />} />
+          <Route path="academic" element={<AcademicMeeting />} />
           <Route path="registration" element={<Registration />} />
-          <Route path="statistics" element={<Statistics />} />
+          
+          {/* 履职统计相关路由 */}
+          <Route path="statistics" element={<StatisticsLayout />}>
+            <Route index element={<Navigate to="/statistics/personal" replace />} />
+            <Route path="personal" element={<PersonalStatistics />} />
+            <Route path="meeting" element={<MeetingStatistics />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

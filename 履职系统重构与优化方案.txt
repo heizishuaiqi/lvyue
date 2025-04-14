@@ -1,0 +1,1681 @@
+# 履职系统重构与优化方案
+
+## 一、需求分析
+
+### 1. 系统角色与权限
+
+#### 1.1 用户角色定义
+1. **移动端用户**
+   - 理事：参与理事会议和学术会议
+   - 常务理事：参与常务理事会议、理事会议和学术会议
+   - 监事：参与监事会议和理事会议
+   - 分支机构负责人：参与分支机构相关会议
+   - 地方学会负责人：参与地方学会相关会议
+
+2. **管理端用户**
+   - 学会管理员：拥有系统所有功能权限
+
+#### 1.2 权限控制
+1. **移动端权限**
+   - 登录验证：手机号或账号密码登录
+   - 角色权限：不同角色能查看不同类型的会议统计
+   - 委托权限：仅理事、常务理事、监事可使用委托功能
+
+2. **管理端权限**
+   - 登录验证：管理员账号密码登录
+   - 功能权限：所有管理功能的访问权限
+
+### 2. 功能模块需求
+
+#### 2.1 移动端功能需求
+
+##### 2.1.1 登录页面
+1. **功能组件**
+   - 登录表单
+     - 支持手机号验证码登录
+     - 支持账号密码登录
+   - 提交按钮
+   - 验证码获取按钮
+   - 错误提示模块
+
+2. **业务流程**
+   - 用户输入登录信息
+   - 系统验证登录信息
+   - 登录成功重定向到首页
+   - 登录失败显示错误信息
+
+3. **交互设计**
+   - 输入框即时验证（手机号格式、密码长度）
+   - 提交按钮状态变化（默认、加载中）
+   - 验证码倒计时显示
+
+##### 2.1.2 首页
+1. **功能组件**
+   - 欢迎信息展示
+   - 功能导航入口
+     - 履职统计入口
+     - 学术会议入口
+   - 用户信息显示
+   - 退出登录入口
+
+2. **业务流程**
+   - 加载用户个人信息
+   - 显示功能入口
+   - 点击导航跳转到对应功能页面
+
+3. **交互设计**
+   - 功能卡片式布局设计
+   - 点击卡片时的动画效果
+   - 统一的设计风格（苹果设计风格）
+
+##### 2.1.3 会议报名页面
+1. **功能组件**
+   - 会议信息卡片
+     - 会议名称
+     - 会议时间
+     - 会议地点
+   - 身份选择模块
+     - 角色下拉菜单
+   - 基础信息表单
+     - 姓名输入框
+     - 手机号输入框
+     - 单位名称输入框
+     - 单位职务输入框
+     - 学会职务输入框
+   - 出席方式选择（理事、常务理事、监事可见）
+     - 本人出席/委托代表出席选择
+   - 委托信息表单（选择委托时显示）
+     - 被委托人姓名输入框
+     - 被委托人手机号输入框
+     - 被委托人单位名称输入框
+     - 被委托人单位职务输入框
+   - 提交按钮
+   - 验证提示模块
+     - 表单验证错误提示
+     - 身份验证错误提示
+     - 重复报名确认提示
+
+2. **业务流程**
+   - 用户通过扫描二维码进入报名页面（无需登录）
+   - 页面获取会议ID并加载会议信息
+   - 用户选择身份角色
+   - 填写基本信息
+   - 选择出席方式（可委托角色）
+   - 如选择委托，填写委托信息
+   - 提交表单前进行验证：
+     - 验证姓名和手机号是否与系统内用户信息匹配
+     - 验证是否已经报名过此次会议
+   - 提交处理逻辑：
+     - 如姓名和手机号不匹配系统用户信息，显示错误提示："姓名或手机号码错误，请更正后重试"
+     - 如已报名过此次会议，弹出确认提示："XXX已经报名此次会议，重新提交会覆盖先前的报名信息，是否确定？"
+       - 用户确认后，更新报名信息
+       - 用户取消后，返回编辑状态
+     - 验证通过且无重复报名（或确认覆盖），提交表单数据
+   - 成功后跳转到成功页面
+
+3. **交互设计**
+   - 表单分步骤填写（先选角色，再填写其他信息）
+   - 实时表单验证与错误提示
+   - 委托信息区域动态显示/隐藏
+   - 提交按钮状态管理
+   - 焦点自动定位到错误字段
+
+4. **数据验证规则**
+   - 姓名/被委托人姓名：至少2个字符
+   - 手机号/被委托人手机号：必须符合11位中国手机号格式（正则：^1[3-9]\\d{9}$）
+   - 单位名称/被委托人单位名称：至少2个字符
+   - 单位职务/被委托人单位职务：至少2个字符
+   - 学会职务：至少2个字符
+   - 所有必填字段不能为空
+   - 身份验证：姓名和手机号必须与系统内用户信息匹配
+
+5. **安全与数据处理**
+   - 无需登录即可访问，但表单提交前进行身份校验
+   - 支持重复报名覆盖机制，保留报名历史记录
+   - 对姓名和手机号进行加密传输，保护用户隐私
+
+##### 2.1.4 报名成功页面
+1. **功能组件**
+   - 成功提示
+     - 成功图标
+     - 成功标题
+     - 成功描述
+   - 会议信息展示
+     - 会议名称
+     - 会议时间
+     - 会议地点
+   - 报名信息展示
+     - 姓名
+     - 手机号码
+     - 单位名称
+     - 单位职务
+     - 出席方式
+   - 委托信息展示（如有）
+     - 被委托人姓名
+     - 被委托人手机号码
+     - 被委托人单位名称
+     - 被委托人单位职务
+   - 重新报名按钮
+   - 返回首页按钮
+
+2. **业务流程**
+   - 从URL参数获取会议ID
+   - 加载报名成功的信息
+   - 显示会议和报名详情
+   - 根据出席方式决定是否显示委托信息
+
+3. **交互设计**
+   - 成功图标动画效果
+   - 信息卡片式展示
+   - 按钮转场效果
+
+##### 2.1.5 履职统计页面
+1. **功能组件**
+   - 顶部导航栏
+     - 返回按钮
+     - 页面标题
+   - 履职情况统计卡片
+     - 常务理事会议次数（常务理事可见）
+     - 理事会议次数（理事和常务理事可见）
+     - 学术会议次数（所有角色可见）
+   - 参会记录列表
+     - 会议类型标签
+     - 会议名称
+     - 会议时间
+     - 会议地点
+     - 出席方式
+   - 时间筛选器
+     - 年份选择
+     - 月份范围选择
+
+2. **业务流程**
+   - 加载用户信息和角色
+   - 根据角色加载对应的会议统计
+   - 加载参会记录列表
+   - 支持时间筛选
+
+3. **交互设计**
+   - 统计数据卡片式展示
+   - 会议记录卡片滚动列表
+   - 会议类型以标签形式显示
+   - 下拉刷新功能
+
+##### 2.1.6 个人中心页面
+1. **功能组件**
+   - 用户基本信息
+     - 姓名
+     - 手机号
+     - 工作单位
+     - 单位职务
+     - 学会职务
+   - 退出登录按钮
+
+2. **业务流程**
+   - 加载用户个人信息
+   - 显示用户基本资料
+   - 退出登录功能
+
+3. **交互设计**
+   - 信息卡片式布局
+   - 退出登录确认对话框
+
+##### 2.1.7 学术会议页面
+1. **功能组件**
+   - 顶部导航栏
+   - 学术会议列表
+     - 会议名称
+     - 会议时间
+     - 会议地点
+   - 会议申报入口
+
+2. **业务流程**
+   - 加载学术会议列表
+   - 展示会议信息
+   - 提供申报入口
+
+3. **交互设计**
+   - 列表项卡片式设计
+   - 滚动加载更多
+
+#### 2.2 管理端功能需求
+
+##### 2.2.1 登录页面
+1. **功能组件**
+   - 登录表单
+     - 用户名输入框
+     - 密码输入框
+   - 记住我选项
+   - 登录按钮
+   - 错误提示模块
+
+2. **业务流程**
+   - 管理员输入登录信息
+   - 系统验证管理员身份
+   - 登录成功重定向到管理主页
+   - 登录失败显示错误信息
+
+3. **交互设计**
+   - 输入框验证反馈
+   - 登录按钮状态变化
+   - 登录过程加载状态
+
+##### 2.2.2 布局组件
+1. **功能组件**
+   - 左侧菜单
+     - 账号管理
+     - 会议管理
+     - 学术会议管理
+     - 报名信息管理
+     - 履职统计
+   - 顶部导航
+     - 面包屑导航
+     - 用户信息
+     - 退出按钮
+   - 内容区域
+
+2. **业务流程**
+   - 根据用户权限显示菜单项
+   - 菜单项点击切换内容区域
+   - 面包屑导航反映当前位置
+
+3. **交互设计**
+   - 菜单高亮显示当前页面
+   - 响应式布局（小屏幕菜单收起）
+   - 固定顶部导航和左侧菜单
+
+##### 2.2.3 账号管理页面
+1. **功能组件**
+   - 搜索模块
+     - 姓名/手机号搜索框
+     - 搜索按钮
+   - 操作按钮区
+     - 新建账号按钮
+     - 批量导入按钮
+     - 导出按钮
+   - 账号列表表格
+     - 姓名列
+     - 手机号码列
+     - 学会职务列
+     - 工作单位列
+     - 工作职务列
+     - 最后登录时间列
+     - 操作列（编辑、删除、修改密码）
+   - 分页控件
+   - 账号创建/编辑模态框
+     - 姓名输入框
+     - 手机号码输入框
+     - 密码输入框（创建时）
+     - 确认密码输入框（创建时）
+     - 学会职务选择框
+     - 工作单位输入框
+     - 工作职务输入框
+   - 密码修改模态框
+   - 删除确认模态框
+
+2. **业务流程**
+   - 加载账号列表数据
+   - 支持搜索筛选
+   - 创建新账号
+   - 编辑账号信息
+   - 修改账号密码
+   - 删除账号（软删除）
+   - 批量导入账号
+   - 导出账号数据
+
+3. **交互设计**
+   - 表格行悬停效果
+   - 模态框动画效果
+   - 表单验证反馈
+   - 操作成功/失败提示
+
+4. **数据验证规则**
+   - 姓名：必填，2-20个字符
+   - 手机号：必填，符合手机号格式
+   - 密码：必填，8-20个字符，包含字母和数字
+   - 确认密码：必填，与密码一致
+   - 学会职务：必填
+   - 工作单位：必填，2-50个字符
+   - 工作职务：必填，2-30个字符
+
+##### 2.2.4 会议管理页面
+1. **功能组件**
+   - 搜索筛选区
+     - 会议名称搜索框
+     - 时间范围选择器
+     - 会议类型选择器
+     - 搜索按钮
+     - 重置按钮
+   - 操作按钮区
+     - 创建会议按钮
+     - 批量导入按钮
+   - 会议列表表格
+     - 会议类型列
+     - 会议形式列
+     - 会议名称列
+     - 会议时间列
+     - 会议地点列
+     - 更新时间列
+     - 报名状态列（开关控件）
+     - 操作列（编辑、删除、生成二维码）
+   - 分页控件
+   - 会议创建/编辑模态框
+     - 会议类型选择框
+     - 会议形式选择框
+     - 会议名称输入框
+     - 会议时间选择器
+     - 会议地点输入框
+   - 二维码展示模态框
+     - 二维码图像
+     - 下载按钮
+     - 会议信息显示
+   - 删除确认模态框
+
+2. **业务流程**
+   - 加载会议列表数据
+   - 支持多条件搜索筛选
+   - 创建新会议
+   - 编辑会议信息
+   - 删除会议
+   - 控制会议报名状态
+   - 生成会议二维码
+   - 下载二维码图片
+
+3. **交互设计**
+   - 表格行悬停效果
+   - 开关组件动画效果
+   - 模态框展示效果
+   - 操作成功/失败提示
+
+4. **数据验证规则**
+   - 会议类型：必选
+   - 会议形式：必选
+   - 会议名称：必填，5-50个字符
+   - 会议时间：必填，有效的日期时间
+   - 会议地点：必填，5-100个字符
+
+##### 2.2.5 学术会议管理页面
+1. **功能组件**
+   - 搜索筛选区
+     - 会议名称搜索框
+     - 搜索按钮
+     - 重置按钮
+   - 操作按钮区
+     - 创建会议按钮
+     - 批量导入按钮
+     - 导出按钮
+   - 学术会议列表表格
+     - 会议名称列
+     - 开始时间列
+     - 结束时间列
+     - 会议地点列
+     - 更新时间列
+     - 操作列（编辑、删除）
+   - 分页控件
+   - 学术会议创建/编辑模态框
+     - 会议名称输入框
+     - 开始时间选择器
+     - 结束时间选择器
+     - 会议地点输入框
+   - 删除确认模态框
+
+2. **业务流程**
+   - 加载学术会议列表
+   - 支持会议名称搜索
+   - 创建新学术会议
+   - 编辑学术会议信息
+   - 删除学术会议
+   - 导入/导出学术会议数据
+
+3. **交互设计**
+   - 表格行悬停效果
+   - 模态框展示效果
+   - 时间选择器联动（结束时间不早于开始时间）
+   - 操作成功/失败提示
+
+4. **数据验证规则**
+   - 会议名称：必填，5-50个字符
+   - 开始时间：必填，有效的日期时间
+   - 结束时间：必填，不早于开始时间
+   - 会议地点：必填，5-100个字符
+
+##### 2.2.6 报名信息管理页面
+1. **功能组件**
+   - 会议选择下拉框
+   - 搜索筛选区
+     - 姓名/手机号搜索框
+     - 搜索按钮
+     - 重置按钮
+   - 操作按钮区
+     - 导出按钮
+   - 报名信息列表表格
+     - 姓名列
+     - 手机号码列
+     - 出席类型列
+     - 学会职务列
+     - 工作单位列
+     - 工作职务列
+     - 被委托人信息列（条件显示）
+     - 审核状态列
+     - 备注列
+     - 操作列（详情、审核）
+   - 分页控件
+   - 报名详情模态框
+     - 基本信息区域
+     - 委托信息区域（如有）
+     - 会议信息区域
+   - 审核操作模态框
+     - 审核状态选择（通过/拒绝）
+     - 备注输入框
+
+2. **业务流程**
+   - 选择会议加载对应报名信息
+   - 支持姓名/手机号搜索
+   - 查看报名详情
+   - 审核报名信息
+   - 导出报名数据
+
+3. **交互设计**
+   - 表格行悬停效果
+   - 审核状态颜色区分（待审核、已通过、已拒绝）
+   - 详情模态框信息分区展示
+   - 操作成功/失败提示
+
+4. **数据验证规则**
+   - 会议选择：必选
+   - 审核备注：选填，0-200个字符
+
+##### 2.2.7 履职统计-个人履职统计页面
+1. **功能组件**
+   - 搜索筛选区
+     - 姓名/手机号搜索框
+     - 时间范围选择器
+     - 会议类型筛选下拉框
+     - 搜索按钮
+     - 重置按钮
+   - 操作按钮区
+     - 导出按钮
+   - 个人履职统计表格
+     - 姓名列
+     - 手机号码列
+     - 学会职务列
+     - 工作单位列
+     - 工作职务列
+     - 常务理事会议次数列
+     - 理事会议次数列
+     - 学术会议次数列
+     - 操作列（详情）
+   - 分页控件
+   - 个人履职详情模态框
+     - 个人基本信息区域
+     - 会议参与记录列表
+       - 会议名称
+       - 会议类型
+       - 会议时间
+       - 会议地点
+       - 出席方式
+     - 导出按钮
+
+2. **业务流程**
+   - 加载个人履职统计数据
+   - 支持多条件筛选
+   - 查看个人履职详情
+   - 导出统计数据和详情
+
+3. **交互设计**
+   - 表格行悬停效果
+   - 会议次数突出显示
+   - 详情模态框信息分区展示
+   - 操作成功/失败提示
+
+##### 2.2.8 履职统计-会议履职统计页面
+1. **功能组件**
+   - 搜索筛选区
+     - 会议名称搜索框
+     - 时间范围选择器
+     - 会议类型筛选下拉框
+     - 搜索按钮
+     - 重置按钮
+   - 操作按钮区
+     - 导出按钮
+   - 会议履职统计表格
+     - 会议名称列
+     - 会议类型列
+     - 会议时间列
+     - 会议地点列
+     - 报名人数列
+     - 本人出席人数列
+     - 委托出席人数列
+     - 出席率列
+     - 操作列（详情）
+   - 分页控件
+   - 会议履职详情模态框
+     - 会议基本信息区域
+     - 出席率和人数统计图表
+     - 参会人员列表
+       - 姓名
+       - 手机号码
+       - 学会职务
+       - 工作单位
+       - 出席方式
+     - 导出参会人员按钮
+
+2. **业务流程**
+   - 加载会议履职统计数据
+   - 支持多条件筛选
+   - 查看会议履职详情
+   - 导出统计数据和参会人员名单
+
+3. **交互设计**
+   - 表格行悬停效果
+   - 出席率颜色区分（高/中/低）
+   - 统计图表可视化展示
+   - 详情模态框信息分区展示
+   - 操作成功/失败提示
+
+### 3. 数据接口需求
+
+#### 3.1 移动端接口
+
+##### 3.1.1 认证接口
+1. **登录接口**
+   - 路径：`/api/auth/login`
+   - 方法：POST
+   - 参数：
+     - 手机号验证码登录：`{phone, verificationCode}`
+     - 账号密码登录：`{phone, password}`
+   - 响应：`{success, token, user}`
+
+2. **获取验证码接口**
+   - 路径：`/api/auth/verification-code`
+   - 方法：POST
+   - 参数：`{phone}`
+   - 响应：`{success, message}`
+
+3. **检查登录状态接口**
+   - 路径：`/api/auth/check`
+   - 方法：GET
+   - 参数：无（使用Authorization头）
+   - 响应：`{authenticated, user}`
+
+4. **退出登录接口**
+   - 路径：`/api/auth/logout`
+   - 方法：POST
+   - 参数：无（使用Authorization头）
+   - 响应：`{success}`
+
+##### 3.1.2 会议报名接口
+1. **获取会议信息接口**
+   - 路径：`/api/meetings/:id`
+   - 方法：GET
+   - 参数：会议ID（路径参数）
+   - 响应：`{id, name, start_time, end_time, location, type, form}`
+
+2. **提交报名接口**
+   - 路径：`/api/registrations`
+   - 方法：POST
+   - 参数：
+     ```
+     {
+       meeting_id,
+       name,
+       phone,
+       work_unit,
+       work_position,
+       society_position,
+       attend_type,
+       delegate_name,
+       delegate_phone,
+       delegate_unit,
+       delegate_position
+     }
+     ```
+   - 响应：`{success, registration_id}`
+
+3. **获取报名成功信息接口**
+   - 路径：`/api/registrations/:id`
+   - 方法：GET
+   - 参数：报名ID（路径参数）
+   - 响应：报名信息和会议信息
+
+4. **验证用户身份接口**
+   - 路径：`/api/user-verification`
+   - 方法：POST
+   - 参数：`{name, phone}`
+   - 响应：`{valid, message}`
+   - 描述：验证姓名和手机号是否与系统内用户信息匹配
+
+5. **检查重复报名接口**
+   - 路径：`/api/registrations/check-duplicate`
+   - 方法：POST
+   - 参数：`{meeting_id, name, phone}`
+   - 响应：`{exists, registration_id, registration_data}`
+   - 描述：检查用户是否已经报名过指定会议，若已报名则返回报名ID和报名数据
+
+##### 3.1.3 履职统计接口
+1. **获取个人履职统计接口**
+   - 路径：`/api/statistics/personal`
+   - 方法：GET
+   - 参数：
+     - 查询参数：`{start_date, end_date}`
+     - 授权：Authorization头
+   - 响应：各类会议次数统计
+
+2. **获取个人参会记录接口**
+   - 路径：`/api/statistics/personal/meetings`
+   - 方法：GET
+   - 参数：
+     - 查询参数：`{start_date, end_date}`
+     - 授权：Authorization头
+   - 响应：参会记录列表
+
+##### 3.1.4 个人信息接口
+1. **获取用户信息接口**
+   - 路径：`/api/users/profile`
+   - 方法：GET
+   - 参数：授权：Authorization头
+   - 响应：用户个人信息
+
+##### 3.1.5 学术会议接口
+1. **获取学术会议列表接口**
+   - 路径：`/api/academic-meetings`
+   - 方法：GET
+   - 参数：查询参数：`{page, per_page}`
+   - 响应：学术会议列表
+
+#### 3.2 管理端接口
+
+##### 3.2.1 认证接口
+1. **管理员登录接口**
+   - 路径：`/api/admin/auth/login`
+   - 方法：POST
+   - 参数：`{username, password, remember}`
+   - 响应：`{success, token, admin}`
+
+2. **检查管理员登录状态接口**
+   - 路径：`/api/admin/auth/check`
+   - 方法：GET
+   - 参数：无（使用Authorization头）
+   - 响应：`{authenticated, admin}`
+
+3. **管理员退出登录接口**
+   - 路径：`/api/admin/auth/logout`
+   - 方法：POST
+   - 参数：无（使用Authorization头）
+   - 响应：`{success}`
+
+##### 3.2.2 账号管理接口
+1. **获取账号列表接口**
+   - 路径：`/api/admin/users`
+   - 方法：GET
+   - 参数：查询参数：`{page, per_page, search, sort_by, sort_order}`
+   - 响应：账号列表和分页信息
+
+2. **创建账号接口**
+   - 路径：`/api/admin/users`
+   - 方法：POST
+   - 参数：账号信息
+   - 响应：`{success, user}`
+
+3. **更新账号接口**
+   - 路径：`/api/admin/users/:id`
+   - 方法：PUT
+   - 参数：更新的账号信息
+   - 响应：`{success}`
+
+4. **删除账号接口**
+   - 路径：`/api/admin/users/:id`
+   - 方法：DELETE
+   - 参数：账号ID（路径参数）
+   - 响应：`{success}`
+
+5. **修改密码接口**
+   - 路径：`/api/admin/users/:id/password`
+   - 方法：PUT
+   - 参数：`{password, confirm_password}`
+   - 响应：`{success}`
+
+6. **批量导入账号接口**
+   - 路径：`/api/admin/users/import`
+   - 方法：POST
+   - 参数：文件上传
+   - 响应：`{success, imported_count, failed_count, errors}`
+
+7. **导出账号接口**
+   - 路径：`/api/admin/users/export`
+   - 方法：GET
+   - 参数：查询参数：`{search, sort_by, sort_order}`
+   - 响应：Excel文件下载
+
+##### 3.2.3 会议管理接口
+1. **获取会议列表接口**
+   - 路径：`/api/admin/meetings`
+   - 方法：GET
+   - 参数：查询参数：`{page, per_page, search, start_date, end_date, type, sort_by, sort_order}`
+   - 响应：会议列表和分页信息
+
+2. **创建会议接口**
+   - 路径：`/api/admin/meetings`
+   - 方法：POST
+   - 参数：会议信息
+   - 响应：`{success, meeting}`
+
+3. **更新会议接口**
+   - 路径：`/api/admin/meetings/:id`
+   - 方法：PUT
+   - 参数：更新的会议信息
+   - 响应：`{success}`
+
+4. **删除会议接口**
+   - 路径：`/api/admin/meetings/:id`
+   - 方法：DELETE
+   - 参数：会议ID（路径参数）
+   - 响应：`{success}`
+
+5. **控制报名状态接口**
+   - 路径：`/api/admin/meetings/:id/registration-status`
+   - 方法：PUT
+   - 参数：`{is_registration_open}`
+   - 响应：`{success}`
+
+6. **生成会议二维码接口**
+   - 路径：`/api/admin/meetings/:id/qrcode`
+   - 方法：GET
+   - 参数：会议ID（路径参数）
+   - 响应：二维码图片或数据
+
+7. **批量导入会议接口**
+   - 路径：`/api/admin/meetings/import`
+   - 方法：POST
+   - 参数：文件上传
+   - 响应：`{success, imported_count, failed_count, errors}`
+
+##### 3.2.4 学术会议管理接口
+1. **获取学术会议列表接口**
+   - 路径：`/api/admin/academic-meetings`
+   - 方法：GET
+   - 参数：查询参数：`{page, per_page, search, sort_by, sort_order}`
+   - 响应：学术会议列表和分页信息
+
+2. **创建学术会议接口**
+   - 路径：`/api/admin/academic-meetings`
+   - 方法：POST
+   - 参数：学术会议信息
+   - 响应：`{success, meeting}`
+
+3. **更新学术会议接口**
+   - 路径：`/api/admin/academic-meetings/:id`
+   - 方法：PUT
+   - 参数：更新的学术会议信息
+   - 响应：`{success}`
+
+4. **删除学术会议接口**
+   - 路径：`/api/admin/academic-meetings/:id`
+   - 方法：DELETE
+   - 参数：学术会议ID（路径参数）
+   - 响应：`{success}`
+
+5. **批量导入学术会议接口**
+   - 路径：`/api/admin/academic-meetings/import`
+   - 方法：POST
+   - 参数：文件上传
+   - 响应：`{success, imported_count, failed_count, errors}`
+
+6. **导出学术会议接口**
+   - 路径：`/api/admin/academic-meetings/export`
+   - 方法：GET
+   - 参数：查询参数：`{search, sort_by, sort_order}`
+   - 响应：Excel文件下载
+
+##### 3.2.5 报名信息管理接口
+1. **获取报名列表接口**
+   - 路径：`/api/admin/registrations`
+   - 方法：GET
+   - 参数：查询参数：`{meeting_id, page, per_page, search, sort_by, sort_order}`
+   - 响应：报名列表和分页信息
+
+2. **获取报名详情接口**
+   - 路径：`/api/admin/registrations/:id`
+   - 方法：GET
+   - 参数：报名ID（路径参数）
+   - 响应：报名详细信息
+
+3. **更新报名审核状态接口**
+   - 路径：`/api/admin/registrations/:id/status`
+   - 方法：PUT
+   - 参数：`{status, remark}`
+   - 响应：`{success}`
+
+4. **导出报名信息接口**
+   - 路径：`/api/admin/registrations/export`
+   - 方法：GET
+   - 参数：查询参数：`{meeting_id, search, sort_by, sort_order}`
+   - 响应：Excel文件下载
+
+##### 3.2.6 履职统计接口
+1. **获取个人履职统计列表接口**
+   - 路径：`/api/admin/statistics/personal`
+   - 方法：GET
+   - 参数：查询参数：`{page, per_page, search, start_date, end_date, sort_by, sort_order}`
+   - 响应：个人履职统计列表和分页信息
+
+2. **获取个人履职详情接口**
+   - 路径：`/api/admin/statistics/personal/:user_id`
+   - 方法：GET
+   - 参数：
+     - 用户ID（路径参数）
+     - 查询参数：`{start_date, end_date}`
+   - 响应：用户信息和参会记录列表
+
+3. **导出个人履职统计接口**
+   - 路径：`/api/admin/statistics/personal/export`
+   - 方法：GET
+   - 参数：查询参数：`{search, start_date, end_date, sort_by, sort_order}`
+   - 响应：Excel文件下载
+
+4. **获取会议履职统计列表接口**
+   - 路径：`/api/admin/statistics/meetings`
+   - 方法：GET
+   - 参数：查询参数：`{page, per_page, search, start_date, end_date, type, sort_by, sort_order}`
+   - 响应：会议履职统计列表和分页信息
+
+5. **获取会议履职详情接口**
+   - 路径：`/api/admin/statistics/meetings/:meeting_id`
+   - 方法：GET
+   - 参数：会议ID（路径参数）
+   - 响应：会议信息、统计数据和参会人员列表
+
+6. **导出会议履职统计接口**
+   - 路径：`/api/admin/statistics/meetings/export`
+   - 方法：GET
+   - 参数：查询参数：`{search, start_date, end_date, type, sort_by, sort_order}`
+   - 响应：Excel文件下载
+
+7. **导出会议参会人员接口**
+   - 路径：`/api/admin/statistics/meetings/:meeting_id/attendees/export`
+   - 方法：GET
+   - 参数：会议ID（路径参数）
+   - 响应：Excel文件下载
+
+### 4. 数据库设计
+
+#### 4.1 用户表（users）
+```sql
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(50) NOT NULL,
+  phone VARCHAR(20) NOT NULL UNIQUE,
+  password VARCHAR(100),
+  role VARCHAR(20) NOT NULL CHECK (role IN ('理事', '常务理事', '监事', '分支机构负责人', '地方学会负责人')),
+  work_unit VARCHAR(100) NOT NULL,
+  work_position VARCHAR(50) NOT NULL,
+  society_position VARCHAR(50) NOT NULL,
+  last_login_at TIMESTAMP,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  is_deleted BOOLEAN NOT NULL DEFAULT FALSE
+);
+```
+
+#### 4.2 管理员表（admins）
+```sql
+CREATE TABLE admins (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  username VARCHAR(50) NOT NULL UNIQUE,
+  password VARCHAR(100) NOT NULL,
+  name VARCHAR(50) NOT NULL,
+  last_login_at TIMESTAMP,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  is_deleted BOOLEAN NOT NULL DEFAULT FALSE
+);
+```
+
+#### 4.3 会议表（meetings）
+```sql
+CREATE TABLE meetings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  type VARCHAR(20) NOT NULL CHECK (type IN ('理事会议', '常务理事会议', '学术会议')),
+  form VARCHAR(20) NOT NULL CHECK (form IN ('线下会议', '线上会议')),
+  name VARCHAR(100) NOT NULL,
+  start_time TIMESTAMP NOT NULL,
+  end_time TIMESTAMP NOT NULL,
+  location VARCHAR(200) NOT NULL,
+  qr_code TEXT,
+  is_registration_open BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT check_meeting_time CHECK (end_time >= start_time)
+);
+```
+
+#### 4.4 学术会议表（academic_meetings）
+```sql
+CREATE TABLE academic_meetings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(100) NOT NULL,
+  start_time TIMESTAMP NOT NULL,
+  end_time TIMESTAMP NOT NULL,
+  location VARCHAR(200) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT check_meeting_time CHECK (end_time >= start_time)
+);
+```
+
+#### 4.5 报名表（registrations）
+```sql
+CREATE TABLE registrations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  meeting_id UUID NOT NULL REFERENCES meetings(id),
+  name VARCHAR(50) NOT NULL,
+  phone VARCHAR(20) NOT NULL,
+  work_unit VARCHAR(100) NOT NULL,
+  work_position VARCHAR(50) NOT NULL,
+  society_position VARCHAR(50) NOT NULL,
+  user_id UUID REFERENCES users(id),
+  attend_type VARCHAR(20) NOT NULL CHECK (attend_type IN ('本人出席', '委托代表出席')),
+  delegate_name VARCHAR(50),
+  delegate_phone VARCHAR(20),
+  delegate_unit VARCHAR(100),
+  delegate_position VARCHAR(50),
+  status VARCHAR(20) NOT NULL DEFAULT '待审核' CHECK (status IN ('待审核', '已通过', '已拒绝')),
+  remark TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT check_delegate_info CHECK (
+    (attend_type = '本人出席') OR 
+    (attend_type = '委托代表出席' AND 
+     delegate_name IS NOT NULL AND 
+     delegate_phone IS NOT NULL AND 
+     delegate_unit IS NOT NULL AND 
+     delegate_position IS NOT NULL)
+  )
+);
+```
+
+#### 4.6 操作日志表（operation_logs）
+```sql
+CREATE TABLE operation_logs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID,
+  admin_id UUID,
+  action VARCHAR(50) NOT NULL,
+  target VARCHAR(50) NOT NULL,
+  details JSONB,
+  ip_address VARCHAR(50),
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT check_user_or_admin CHECK (
+    (user_id IS NULL AND admin_id IS NOT NULL) OR 
+    (user_id IS NOT NULL AND admin_id IS NULL)
+  ),
+  CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id),
+  CONSTRAINT fk_admin FOREIGN KEY (admin_id) REFERENCES admins(id)
+);
+```
+
+## 一、现有问题分析
+
+### 1. 代码冗余问题
+1. **表单组件重复实现**
+   - 移动端的报名表单组件在不同文件中存在重复实现
+   - 缺乏统一的表单逻辑抽象
+
+2. **样式定义分散**
+   - CSS样式文件分散在各个组件目录中
+   - 部分样式在App.css和组件CSS文件中重复定义
+
+3. **模拟数据硬编码**
+   - 会议数据等直接写在组件内部
+   - 缺少统一的数据服务层
+   - 数据格式不一致，散布在不同组件中
+   - 后期替换为真实API困难，需要修改多处代码
+   - 无法模拟网络延迟和错误情况，不利于开发测试
+
+### 2. 架构问题
+1. **状态管理不统一**
+   - 混合使用本地状态(useState)和localStorage存储
+   - 缺乏统一的状态管理策略
+
+2. **路由配置问题**
+   - 移动端路由需要会议ID参数，但访问基础路径时无有效错误处理
+   - 缺少默认路由和重定向机制
+
+3. **错误处理机制不统一**
+   - 表单验证错误、网络请求错误处理方式不一致
+   - 缺少全局异常捕获机制
+
+4. **API调用层缺失**
+   - 缺少统一的API调用层
+   - 组件直接使用localStorage或硬编码数据
+
+### 3. 其他技术细节
+1. **移动端适配不完善**
+   - 使用固定像素值，在不同设备上显示不一致
+   - 缺少响应式设计的系统实现
+
+2. **依赖版本问题**
+   - 移动端和管理端使用不同版本的React
+   - 版本不一致导致维护困难
+
+3. **缺少必要的加载状态处理**
+   - 用户操作后缺少加载反馈
+   - 缺少加载指示器和骨架屏等用户体验优化
+
+## 二、重构方案
+
+### 1. 前期规划与设计
+1. **需求分析与系统设计**
+   - 深入理解业务需求，绘制用户流程图
+   - 设计系统架构，确定前后端交互模式
+   - 制定统一的API接口规范
+   - 设计数据库模型，明确实体关系
+
+2. **技术栈选型**
+   - 前端框架：React 18 (保持移动端和管理端版本一致)
+   - 状态管理：React Context + useReducer
+   - 路由管理：React Router v6
+   - UI组件：按需选择合适的组件库
+   - CSS解决方案：CSS Modules + CSS变量
+   - 后端服务：保持Supabase方案
+
+3. **项目结构优化**
+   - 采用多包管理(monorepo)结构
+   - 抽离共享代码到common包
+   - 分离管理端(admin)和移动端(mobile)代码
+
+### 2. 代码结构与组织
+1. **组件设计原则**
+   - 采用原子设计模式
+   - 组件职责单一，关注点分离
+   - 通过属性实现组件的可配置性
+
+2. **状态管理策略**
+   - 全局状态：用户信息、认证状态等通过Context API管理
+   - 页面状态：组件内的useState或useReducer
+   - 表单状态：封装自定义表单钩子
+
+3. **API服务层**
+   - 集中管理API请求
+   - 统一错误处理
+   - 实现请求缓存和防抖
+   - **Mock数据管理**：
+     - 创建独立的模拟数据模块，与真实API保持一致的接口结构
+     - 使用环境变量控制API来源（真实/模拟）
+     - 模拟API支持网络延迟和错误模拟
+     - 提供无缝切换机制，便于后期替换为真实API而无需修改业务代码
+
+### 3. 前端实现
+1. **样式系统**
+   - 建立设计令牌系统(Design Tokens)
+   - 组件样式使用CSS Modules
+   - 响应式设计使用媒体查询和相对单位
+
+2. **表单封装与验证**
+   - 创建通用表单组件和验证逻辑
+   - 抽离表单逻辑到自定义钩子
+   - 统一错误处理和展示方式
+
+3. **路由配置与权限控制**
+   - 集中管理路由配置
+   - 实现路由守卫，控制页面访问权限
+   - 处理无效路由和重定向
+
+4. **错误处理与状态管理**
+   - 全局错误边界
+   - API请求错误统一处理
+   - 表单验证错误显示与处理
+   - 加载状态和空状态处理
+
+### 4. 性能优化与用户体验
+1. **代码分割与懒加载**
+   - 页面级组件使用React.lazy
+   - 动态导入大型组件和库
+
+2. **组件性能优化**
+   - 使用React.memo包装纯组件
+   - 使用useCallback和useMemo避免不必要的重渲染
+   - 合理使用useEffect的依赖数组
+
+3. **移动端优化**
+   - 使用虚拟列表渲染大量数据
+   - 图片懒加载与优化
+   - 页面过渡动画提升体验
+
+4. **无障碍与SEO优化**
+   - 语义化HTML结构
+   - 适当的ARIA属性
+   - 键盘导航支持
+
+### 5. 开发流程与工具
+1. **代码规范与质量控制**
+   - ESLint和Prettier配置
+   - Husky和lint-staged实现提交前代码检查
+   - 单元测试和组件测试
+
+2. **文档化**
+   - 组件文档
+   - API接口文档
+   - 项目README和开发指南
+
+3. **开发环境配置**
+   - 开发环境变量管理
+   - 多环境构建配置
+   - 开发工具推荐配置
+
+### 6. 部署与持续集成
+1. **构建优化**
+   - 代码分割策略
+   - 资源压缩与优化
+   - 浏览器缓存策略
+
+2. **自动化部署**
+   - 持续集成和持续部署流程
+   - 环境分离策略
+   - 版本控制和回滚机制
+
+## 三、具体实现示例
+
+### 1. 项目结构
+```
+/
+├── packages/              # 多包管理
+│   ├── common/            # 公共代码
+│   │   ├── constants/     # 常量定义
+│   │   ├── hooks/         # 自定义钩子
+│   │   ├── utils/         # 工具函数
+│   │   └── services/      # API服务
+│   │
+│   ├── admin/             # 管理端
+│   │   ├── src/
+│   │   │   ├── assets/    # 静态资源
+│   │   │   ├── components/# 组件
+│   │   │   ├── pages/     # 页面
+│   │   │   ├── layouts/   # 布局组件
+│   │   │   └── styles/    # 样式
+│   │   └── package.json
+│   │
+│   └── mobile/            # 移动端
+│       ├── src/
+│       │   ├── assets/    # 静态资源
+│       │   ├── components/# 组件
+│       │   ├── pages/     # 页面
+│       │   └── styles/    # 样式
+│       └── package.json
+│
+├── package.json           # 根项目配置
+└── README.md              # 项目说明
+```
+
+### 2. 样式系统实现
+```css
+/* styles/tokens.css */
+:root {
+  /* 颜色系统 */
+  --color-primary: #0071e3;
+  --color-text-primary: #1d1d1f;
+  --color-text-secondary: #86868b;
+  --color-background: #ffffff;
+  --color-error: #ff4d4f;
+  
+  /* 间距系统 */
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  
+  /* 圆角 */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  
+  /* 阴影 */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+  /* 动画 */
+  --transition-normal: all 0.3s ease;
+}
+```
+
+### 3. 表单钩子示例
+```jsx
+// hooks/useForm.js
+export const useForm = (initialValues, validate) => {
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // 处理输入变化
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setValues(prev => ({ ...prev, [name]: value }));
+    
+    // 实时验证
+    if (errors[name]) {
+      validateField(name, value);
+    }
+  };
+  
+  // 验证单个字段
+  const validateField = (name, value) => {
+    if (validate) {
+      const fieldError = validate[name] ? validate[name](value, values) : null;
+      setErrors(prev => ({ ...prev, [name]: fieldError }));
+      return !fieldError;
+    }
+    return true;
+  };
+  
+  // 验证整个表单
+  const validateForm = () => {
+    if (!validate) return {};
+    
+    const formErrors = {};
+    Object.keys(values).forEach(key => {
+      if (validate[key]) {
+        const error = validate[key](values[key], values);
+        if (error) formErrors[key] = error;
+      }
+    });
+    
+    setErrors(formErrors);
+    return formErrors;
+  };
+  
+  // 提交表单
+  const handleSubmit = (callback) => async (e) => {
+    e.preventDefault();
+    
+    const formErrors = validateForm();
+    if (Object.keys(formErrors).length === 0) {
+      setIsSubmitting(true);
+      try {
+        await callback(values);
+      } catch (error) {
+        console.error('Form submission error:', error);
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
+  };
+  
+  return {
+    values,
+    errors,
+    isSubmitting,
+    handleChange,
+    handleSubmit,
+    setValues,
+    validateField,
+    validateForm
+  };
+};
+```
+
+### 4. API服务层示例
+```jsx
+// services/api.js
+import { supabase } from './supabase';
+
+export const api = {
+  // 会议相关
+  meetings: {
+    get: async (id) => {
+      try {
+        const { data, error } = await supabase
+          .from('meetings')
+          .select('*')
+          .eq('id', id)
+          .single();
+          
+        if (error) throw error;
+        return data;
+      } catch (error) {
+        console.error('Error fetching meeting:', error);
+        throw error;
+      }
+    },
+    
+    list: async (params = {}) => {
+      try {
+        let query = supabase.from('meetings').select('*');
+        
+        // 应用过滤条件
+        if (params.type) {
+          query = query.eq('type', params.type);
+        }
+        
+        if (params.search) {
+          query = query.ilike('name', `%${params.search}%`);
+        }
+        
+        // 应用分页
+        if (params.page && params.pageSize) {
+          const from = (params.page - 1) * params.pageSize;
+          const to = from + params.pageSize - 1;
+          query = query.range(from, to);
+        }
+        
+        // 应用排序
+        if (params.orderBy) {
+          query = query.order(params.orderBy, { ascending: params.ascending !== false });
+        } else {
+          query = query.order('created_at', { ascending: false });
+        }
+        
+        const { data, error, count } = await query;
+        
+        if (error) throw error;
+        return { data, count };
+      } catch (error) {
+        console.error('Error fetching meetings:', error);
+        throw error;
+      }
+    },
+    
+    // 其他方法...
+  },
+  
+  // 报名相关
+  registrations: {
+    // 创建报名
+    create: async (data) => {
+      try {
+        const { data: result, error } = await supabase
+          .from('registrations')
+          .insert([data])
+          .select();
+          
+        if (error) throw error;
+        return result[0];
+      } catch (error) {
+        console.error('Error creating registration:', error);
+        throw error;
+      }
+    },
+    
+    // 其他方法...
+  },
+  
+  // 用户相关
+  users: {
+    // 方法实现...
+  },
+  
+  // 统计相关
+  statistics: {
+    // 方法实现...
+  },
+};
+```
+
+### 5. Mock数据服务实现
+```jsx
+// services/mockData/index.js
+// 统一导出所有模拟数据
+import { meetingsMock } from './meetings';
+import { registrationsMock } from './registrations';
+import { usersMock } from './users';
+import { statisticsMock } from './statistics';
+
+export const mockData = {
+  meetings: meetingsMock,
+  registrations: registrationsMock,
+  users: usersMock,
+  statistics: statisticsMock
+};
+
+// services/mockApi.js
+// 基于模拟数据的API服务，与真实API接口保持一致
+import { mockData } from './mockData';
+
+export const mockApi = {
+  // 会议相关
+  meetings: {
+    get: async (id) => {
+      // 模拟网络延迟
+      await new Promise(resolve => setTimeout(resolve, 300));
+      const meeting = mockData.meetings.getById(id);
+      
+      if (!meeting) {
+        throw new Error('Meeting not found');
+      }
+      
+      return meeting;
+    },
+    
+    list: async (params = {}) => {
+      // 模拟网络延迟
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      let data = [...mockData.meetings.list];
+      
+      // 模拟过滤逻辑
+      if (params.type) {
+        data = data.filter(meeting => meeting.type === params.type);
+      }
+      
+      if (params.search) {
+        data = data.filter(meeting => 
+          meeting.name.toLowerCase().includes(params.search.toLowerCase())
+        );
+      }
+      
+      // 模拟分页
+      const total = data.length;
+      if (params.page && params.pageSize) {
+        const start = (params.page - 1) * params.pageSize;
+        const end = start + params.pageSize;
+        data = data.slice(start, end);
+      }
+      
+      return { data, count: total };
+    }
+  },
+  
+  // 其他API方法实现...
+};
+
+// services/apiClient.js
+// 统一API客户端，根据环境切换真实或模拟API
+import { api } from './api';
+import { mockApi } from './mockApi';
+
+// 根据环境变量决定使用真实API还是模拟API
+const USE_MOCK = process.env.REACT_APP_USE_MOCK === 'true';
+
+// 导出统一的API客户端
+export const apiClient = USE_MOCK ? mockApi : api;
+
+/*
+使用示例:
+import { apiClient } from './services/apiClient';
+
+// 在组件中使用
+const Component = () => {
+  const [meeting, setMeeting] = useState(null);
+  
+  useEffect(() => {
+    const fetchMeeting = async () => {
+      try {
+        const data = await apiClient.meetings.get('1');
+        setMeeting(data);
+      } catch (error) {
+        console.error('Failed to fetch meeting:', error);
+      }
+    };
+    
+    fetchMeeting();
+  }, []);
+  
+  // 组件渲染...
+};
+*/
+```
+
+### 6. 权限控制实现
+```jsx
+// components/PrivateRoute.jsx
+import React from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import LoadingScreen from './LoadingScreen';
+
+const PrivateRoute = ({ children, requiredRole = null }) => {
+  const { isAuthenticated, user, loading } = useAuth();
+  const location = useLocation();
+  
+  // 显示加载状态
+  if (loading) {
+    return <LoadingScreen />;
+  }
+  
+  // 检查认证状态
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+  
+  // 检查角色权限(如果需要)
+  if (requiredRole && user.role !== requiredRole) {
+    return <Navigate to="/unauthorized" replace />;
+  }
+  
+  // 通过所有检查，渲染子组件
+  return children;
+};
+
+export default PrivateRoute;
+```
+
+### 7. 移动端报名表单组件
+```jsx
+// pages/Registration/index.jsx
+import React from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useRegistrationForm } from '../../hooks/useRegistrationForm';
+import MeetingInfoCard from '../../components/MeetingInfoCard';
+import RoleSelector from '../../components/RoleSelector';
+import BasicInfoFields from '../../components/BasicInfoFields';
+import AttendanceTypeSelector from '../../components/AttendanceTypeSelector';
+import DelegateInfoFields from '../../components/DelegateInfoFields';
+import SubmitButton from '../../components/SubmitButton';
+import styles from './Registration.module.css';
+
+const RegistrationPage = () => {
+  const { meetingId } = useParams();
+  const navigate = useNavigate();
+  const { 
+    formData, 
+    errors, 
+    isSubmitting, 
+    step, 
+    setStep,
+    handleChange, 
+    handleSubmit,
+    meeting
+  } = useRegistrationForm(meetingId);
+  
+  // 处理表单提交
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    const success = await handleSubmit();
+    if (success) {
+      navigate(`/success?meetingId=${meetingId}`);
+    }
+  };
+  
+  // 检查是否可以委托
+  const canDelegate = ['director', 'standing_director', 'supervisor'].includes(formData.role);
+  
+  return (
+    <div className={styles.container}>
+      {/* 会议信息卡片 */}
+      <MeetingInfoCard meeting={meeting} />
+      
+      {/* 报名表单 */}
+      <form onSubmit={onSubmit} className={styles.form}>
+        {/* 角色选择 */}
+        <RoleSelector 
+          value={formData.role}
+          onChange={handleChange}
+          error={errors.role}
+          onRoleSelect={(role) => {
+            handleChange({ target: { name: 'role', value: role } });
+            setStep('form');
+          }}
+        />
+        
+        {step === 'form' && (
+          <>
+            {/* 基本信息 */}
+            <BasicInfoFields 
+              formData={formData}
+              errors={errors}
+              onChange={handleChange}
+            />
+            
+            {/* 出席方式选择 - 仅特定角色可见 */}
+            {canDelegate && (
+              <AttendanceTypeSelector
+                value={formData.attendType}
+                onChange={handleChange}
+                error={errors.attendType}
+              />
+            )}
+            
+            {/* 委托信息 - 仅选择委托出席时可见 */}
+            {canDelegate && formData.attendType === '委托代表' && (
+              <DelegateInfoFields
+                formData={formData}
+                errors={errors}
+                onChange={handleChange}
+              />
+            )}
+            
+            {/* 提交按钮 */}
+            <SubmitButton 
+              isSubmitting={isSubmitting}
+              text="提交报名"
+              loadingText="提交中..."
+            />
+          </>
+        )}
+      </form>
+    </div>
+  );
+};
+
+export default RegistrationPage;
+```
+
+## 四、实施建议
+
+1. **分阶段实施**
+   - 第一阶段：项目结构重构，建立基础架构
+   - 第二阶段：核心组件和服务层重构
+   - 第三阶段：页面组件重构和功能优化
+   - 第四阶段：性能优化和用户体验提升
+
+2. **保持兼容性**
+   - 在重构过程中保持对现有API的兼容
+   - 采用适配器模式过渡旧组件和新组件
+
+3. **测试策略**
+   - 为重构的组件和服务编写单元测试
+   - 实施端到端测试确保功能完整性
+   - 进行性能测试评估优化效果
+
+4. **文档和知识共享**
+   - 及时更新项目文档
+   - 组织团队分享重构经验和最佳实践
+   - 建立组件库文档，方便团队使用
+
+5. **Mock数据向真实API过渡**
+   - 采用分阶段替换策略，先实现核心接口，再逐步完善
+   - 建立详细的API接口文档，确保前后端接口一致性
+   - 开发环境保留Mock选项，方便本地调试和测试
+   - 实施并行测试策略，确保API替换前后功能一致
+   - 使用特性开关(Feature Toggle)控制API切换，便于快速回退
+
+通过以上优化方案，可以显著提高代码质量、开发效率和用户体验，构建一个更加健壮、易于维护的履职系统。 

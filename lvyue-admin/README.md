@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 中国电子学会履职系统 - 管理端
 
 ## 项目说明
@@ -247,3 +248,26 @@ npm run build
 - 实现账号管理基础功能
 - 添加路由守卫
 - 实现退出登录功能
+=======
+# React + TypeScript + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+While this project uses React, Vite supports many popular JS frameworks. [See all the supported frameworks](https://vitejs.dev/guide/#scaffolding-your-first-vite-project).
+
+## Deploy Your Own
+
+Deploy your own Vite project with Vercel.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/vercel/tree/main/examples/vite-react&template=vite-react)
+
+_Live Example: https://vite-react-example.vercel.app_
+
+### Deploying From Your Terminal
+
+You can deploy your new Vite project with a single command from your terminal using [Vercel CLI](https://vercel.com/download):
+
+```shell
+$ vercel
+```
+>>>>>>> 0964f4a35faffa21612c8a467afa50c1c2d04c10

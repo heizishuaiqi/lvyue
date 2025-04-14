@@ -134,56 +134,71 @@
 
 /* 状态标签样式 */
 .status-tag {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 2px;
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: normal;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
 }
 
 .status-tag.success {
-  background-color: #E6F4FF;
-  color: #4086FF;
+  color: #52c41a;
 }
 
 .status-tag.pending {
-  background-color: #FFF7E6;
-  color: #FA8C16;
+  color: #faad14;
 }
 
-/* 操作按钮样式 */
-.action-buttons {
-  display: flex;
-  gap: 8px;
+.status-tag.reject {
+  color: #f5222d;
 }
 
+/* 表格按钮样式 */
 .table-button {
-  padding: 4px 8px;
-  background: none;
+  padding: 4px 12px;
+  margin: 0 4px;
   border: none;
-  color: #4086FF;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
   transition: all 0.3s;
 }
 
-.table-button:hover {
-  color: #2466CC;
+.table-button.primary {
+  color: #1890ff;
+  background: transparent;
+}
+
+.table-button.primary:hover {
+  color: #40a9ff;
+  background-color: #e6f7ff;
+}
+
+.table-button.info {
+  color: #13c2c2;
+  background: transparent;
+}
+
+.table-button.info:hover {
+  color: #36cfc9;
+  background-color: #e6fffb;
 }
 
 .table-button.success {
-  color: #52C41A;
+  color: #52c41a;
+  background: transparent;
 }
 
 .table-button.success:hover {
-  color: #389E0D;
+  color: #73d13d;
+  background-color: #f6ffed;
 }
 
-.table-button.danger {
-  color: #FF4D4F;
-}
-
-.table-button.danger:hover {
-  color: #CF1322;
+/* 操作按钮容器 */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
 }
 
 /* 分页样式 */
@@ -256,5 +271,14 @@
 
   .data-table {
     min-width: 800px;
+  }
+
+  .table-button {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  
+  .status-tag {
+    font-size: 12px;
   }
 } 

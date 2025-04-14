@@ -1,0 +1,171 @@
+.sync-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.sync-modal {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #1F2937;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #6B7280;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.close-button:hover {
+  color: #374151;
+}
+
+.modal-content {
+  padding: 20px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.info-item label {
+  color: #6B7280;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.info-item span {
+  color: #1F2937;
+  font-size: 14px;
+}
+
+.sync-status-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #1F2937;
+  background-color: #fff;
+}
+
+.sync-status-select:focus {
+  outline: none;
+  border-color: #4086FF;
+}
+
+/* 同步输入框样式 */
+.sync-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #1F2937;
+  background-color: #fff;
+}
+
+.sync-input:hover {
+  border-color: #4086FF;
+}
+
+.sync-input:focus {
+  outline: none;
+  border-color: #4086FF;
+  box-shadow: 0 0 0 2px rgba(64, 134, 255, 0.1);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid #E5E7EB;
+  background-color: #f5f5f5;
+}
+
+.cancel-button,
+.sync-button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancel-button {
+  background: white;
+  border: 1px solid #d9d9d9;
+  color: #666;
+}
+
+.cancel-button:hover {
+  background: #f9f9f9;
+  border-color: #bbb;
+}
+
+.sync-button {
+  background: #4086FF;
+  border: none;
+  color: white;
+}
+
+.sync-button:hover {
+  background: #2B6CD9;
+}
+
+@media screen and (max-width: 640px) {
+  .sync-modal {
+    width: 95%;
+    margin: 16px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-footer {
+    flex-direction: column;
+  }
+
+  .cancel-button,
+  .sync-button {
+    width: 100%;
+  }
+} 

@@ -13,7 +13,7 @@
   background-color: #4086FF;
   color: white;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
   position: sticky;
@@ -21,17 +21,20 @@
   z-index: 100;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 100%;
+  box-sizing: border-box;
 }
 
 .profile-header h1 {
+  flex: 1;
   font-size: 17px;
   margin: 0;
   font-weight: normal;
+  text-align: center;
 }
 
 .back-btn {
-  position: absolute;
-  left: 16px;
+  width: 32px;
+  height: 32px;
   background: none;
   border: none;
   color: white;
@@ -41,9 +44,19 @@
   align-items: center;
   justify-content: center;
   outline: none;
-  width: 24px;
-  height: 24px;
   transition: background-color 0.3s;
+  position: relative;
+}
+
+.back-btn::before {
+  content: '';
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(45deg);
+  margin-right: -3px;
 }
 
 .back-btn:active {
@@ -51,7 +64,7 @@
 }
 
 .placeholder {
-  width: 24px;
+  width: 32px;
 }
 
 /* 信息卡片 */
@@ -102,10 +115,6 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
-.info-item:last-child {
-  border-bottom: none;
-}
-
 .info-label {
   font-size: 14px;
   color: #999;
@@ -141,4 +150,14 @@
 
 .logout-btn:active {
   background-color: #3371d9;
+}
+
+@media screen and (min-width: 768px) {
+  .profile-content {
+    padding: 24px 40px;
+  }
+  
+  .info-group {
+    padding: 24px;
+  }
 } 

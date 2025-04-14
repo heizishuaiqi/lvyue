@@ -1,0 +1,211 @@
+.container {
+  padding: 20px;
+  width: 100%;
+  margin: 0;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+}
+
+.meetingInfo, .formContainer {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.meetingTitle {
+  font-size: 22px;
+  color: #1d1d1f;
+  text-align: center;
+  margin: 0 0 24px;
+  font-weight: 600;
+}
+
+.meetingDetail {
+  color: #666;
+}
+
+.detailItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.detailItem:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  width: 60px;
+  color: #86868b;
+}
+
+.formTitle {
+  font-size: 20px;
+  color: #1d1d1f;
+  margin: 0 0 28px;
+  text-align: center;
+  font-weight: 600;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.formContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.formItem {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.formItem:last-child {
+  margin-bottom: 0;
+}
+
+.formItem label {
+  font-size: 15px;
+  color: #1d1d1f;
+  font-weight: 500;
+}
+
+.required::after {
+  content: ' *';
+  color: #ff4d4f;
+}
+
+.select,
+.input {
+  height: 46px;
+  padding: 0 16px;
+  border: 1px solid #d2d2d7;
+  border-radius: 10px;
+  font-size: 16px;
+  color: #1d1d1f;
+  background-color: #fff;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.select:focus,
+.input:focus {
+  border-color: #0071e3;
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+  outline: none;
+}
+
+.select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+.radioGroup {
+  display: flex;
+  gap: 24px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.radioLabel input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.delegateInfo {
+  background: #f7f8fa;
+  padding: 28px;
+  border-radius: 14px;
+  margin-top: 28px;
+  margin-bottom: 12px;
+  border: 1px solid #e5e5ea;
+}
+
+.delegateInfo .formItem {
+  margin-bottom: 24px;
+}
+
+.delegateInfo .formItem:last-child {
+  margin-bottom: 0;
+}
+
+.delegateInfoTitle {
+  font-size: 18px;
+  color: #1d1d1f;
+  font-weight: 600;
+  margin-bottom: 24px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e5e5ea;
+  text-align: center;
+}
+
+.delegateInfo .formItem label {
+  color: #1d1d1f;
+  font-size: 15px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.delegateInfo .input {
+  background-color: #ffffff;
+  border: 1px solid #d2d2d7;
+  height: 48px;
+  font-size: 16px;
+}
+
+.submitButton {
+  height: 48px;
+  background: #0071e3;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 28px;
+  width: 100%;
+  transition: all 0.2s ease;
+  letter-spacing: 1px;
+}
+
+.submitButton:hover {
+  background: #0077ed;
+}
+
+.submitButton:active {
+  background: #0068d1;
+  transform: scale(0.98);
+} 

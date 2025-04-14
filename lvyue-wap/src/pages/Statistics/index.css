@@ -1,36 +1,181 @@
 /* 统计页面容器 */
 .statistics-page {
   min-height: 100vh;
-  background-color: #f7f8fa;
-  padding-bottom: 20px;
+  background-color: #f5f7fa;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  max-width: 100%;
-  margin: 0;
 }
 
-/* 统计页面标题栏 */
+/* 顶部栏样式 */
 .statistics-header {
-  background-color: #4086FF;
-  color: white;
-  padding: 15px 20px;
-  text-align: center;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 16px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  width: 100%;
+  padding: 16px;
+  background-color: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.back-button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+}
+
+.back-button::before {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-left: 2px solid #333;
+  border-bottom: 2px solid #333;
+  transform: rotate(45deg);
+  margin-right: -3px;
 }
 
 .statistics-header h1 {
   font-size: 18px;
+  color: #333;
   margin: 0;
   font-weight: 500;
+}
+
+.placeholder {
+  width: 32px;
+}
+
+/* 统计内容区域 */
+.statistics-content {
   flex: 1;
+  padding: 16px;
+}
+
+/* 统计卡片 */
+.statistics-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.statistics-card h3 {
+  margin: 0 0 16px;
+  font-size: 16px;
+  color: #333;
+}
+
+.statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.statistics-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
+}
+
+.statistics-item .count {
+  font-size: 24px;
+  color: #4086FF;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.statistics-item .label {
+  font-size: 14px;
+  color: #666;
+}
+
+/* 参会记录区域 */
+.meetings-section {
+  margin-top: 16px;
+}
+
+.section-title {
+  font-size: 16px;
+  color: #333;
+  margin: 0 0 16px;
+}
+
+.meeting-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.meeting-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  position: relative;
+}
+
+.meeting-tag {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #4086FF;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.meeting-title {
+  font-size: 16px;
+  color: #333;
+  margin: 0 0 12px;
+  padding-right: 80px;
+}
+
+.meeting-details {
+  font-size: 14px;
+  color: #666;
+}
+
+.meeting-details p {
+  margin: 8px 0;
+  display: flex;
+}
+
+.meeting-details .label {
+  width: 70px;
+  color: #999;
+}
+
+.empty-meetings {
+  padding: 30px 0;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+  background: #fff;
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+/* 响应式设计 */
+@media screen and (min-width: 768px) {
+  .statistics-content {
+    padding: 24px 40px;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .statistics-card {
+    padding: 24px;
+  }
 }
 
 /* 个人中心按钮 */
@@ -56,122 +201,68 @@
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* 统计卡片 */
-.statistics-card {
-  background: #fff;
-  border-radius: 0;
-  padding: 20px;
-  margin: 0 0 16px 0;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  width: 100%;
+/* 加载动画 */
+.loading-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
 }
 
-.statistics-card h3 {
-  font-size: 16px;
-  color: #333;
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* 空状态优化 */
+.empty-meetings img {
+  width: 120px;
+  height: 120px;
   margin-bottom: 16px;
-  font-weight: 500;
+  opacity: 0.6;
 }
 
-.statistics-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 12px;
-}
-
-.statistics-item {
-  text-align: center;
+/* 滚动优化 */
+.statistics-content {
+  flex: 1;
   padding: 16px;
-  background: #f7f8fa;
-  border-radius: 8px;
-}
-
-.statistics-item .count {
-  display: block;
-  font-size: 24px;
-  color: #4086FF;
-  font-weight: 500;
-  margin-bottom: 4px;
-}
-
-.statistics-item .label {
-  font-size: 14px;
-  color: #666;
-}
-
-/* 参会记录区域 */
-.meetings-section {
-  padding: 0 16px;
-  margin-bottom: 20px;
-}
-
-.section-title {
-  font-size: 16px;
-  color: #333;
-  margin: 24px 0 16px;
-  font-weight: 500;
-}
-
-/* 会议卡片容器 */
-.meeting-cards {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }
 
-/* 会议卡片 */
-.meeting-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 16px;
-  position: relative;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+/* 优化移动端点击体验 */
+@media (hover: none) {
+  .meeting-card:active {
+    transform: scale(0.98);
+  }
 }
 
-/* 会议类型标签 */
-.meeting-tag {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background-color: #4086FF;
-  color: white;
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 0 8px 0 8px;
-}
-
-/* 会议标题 */
-.meeting-title {
-  font-size: 16px;
-  color: #333;
-  margin: 0 0 12px;
-  font-weight: 500;
-  padding-right: 60px; /* 为右上角的标签留出空间 */
-}
-
-/* 会议详情 */
-.meeting-details {
-  font-size: 14px;
-  color: #666;
-}
-
-.meeting-details p {
-  margin-bottom: 6px;
-  display: flex;
-}
-
-.meeting-details .label {
-  color: #999;
-  width: 70px;
-}
-
-/* 空数据提示 */
-.empty-meetings {
-  padding: 30px 0;
-  text-align: center;
-  color: #999;
-  font-size: 14px;
-  background: #fff;
-  border-radius: 8px;
-  margin-top: 16px;
+/* 暗色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .statistics-page {
+    background-color: #1a1a1a;
+  }
+  
+  .statistics-card,
+  .meeting-card {
+    background-color: #2a2a2a;
+    color: #fff;
+  }
+  
+  .meeting-title,
+  .statistics-card h3 {
+    color: #fff;
+  }
+  
+  .meeting-info {
+    color: #bbb;
+  }
 } 

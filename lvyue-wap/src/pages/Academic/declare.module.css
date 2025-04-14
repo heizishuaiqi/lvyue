@@ -1,0 +1,141 @@
+.container {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* 顶部栏样式 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background-color: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.backButton {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+}
+
+.backButton::before {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-left: 2px solid #333;
+  border-bottom: 2px solid #333;
+  transform: rotate(45deg);
+  margin-right: -3px;
+}
+
+.title {
+  font-size: 18px;
+  color: #333;
+  margin: 0;
+  font-weight: 500;
+}
+
+.placeholder {
+  width: 32px;
+}
+
+/* 内容区样式 */
+.content {
+  flex: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 表单卡片样式 */
+.form {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 提示文字 */
+.tip {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 24px;
+  padding: 12px;
+  background-color: #f6f6f6;
+  border-radius: 4px;
+  line-height: 1.5;
+}
+
+.formItem {
+  margin-bottom: 20px;
+}
+
+.formItem label {
+  display: block;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.formItem input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #e5e6eb;
+  border-radius: 4px;
+  padding: 0 12px;
+  font-size: 14px;
+  color: #333;
+  box-sizing: border-box;
+}
+
+.formItem input:focus {
+  outline: none;
+  border-color: #4086FF;
+  box-shadow: 0 0 0 2px rgba(64, 134, 255, 0.1);
+}
+
+.formItem input::placeholder {
+  color: #999;
+}
+
+/* 提交按钮 */
+.submitButton {
+  width: 100%;
+  height: 40px;
+  background-color: #4086FF;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.submitButton:hover {
+  background-color: #3476e9;
+}
+
+/* 响应式设计 */
+@media screen and (min-width: 768px) {
+  .content {
+    padding: 24px 40px;
+  }
+} 

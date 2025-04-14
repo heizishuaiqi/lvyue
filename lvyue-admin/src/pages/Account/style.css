@@ -1,25 +1,36 @@
 /* 账号管理页面样式 */
 .account-page {
   background-color: white;
-  min-height: calc(100vh - 112px);
+  min-height: calc(100vh - 48px); /* 与新的导航栏高度匹配 */
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: 100%;
+  overflow-x: hidden; /* 防止水平溢出 */
+  margin-top: 0; /* 移除负边距 */
+  border-top: none; /* 确保没有边框 */
+  padding-top: 0; /* 确保没有内边距 */
 }
 
 /* 操作栏样式 */
 .operation-bar {
-  padding: 24px;
+  padding: 16px 24px; /* 减少垂直内边距 */
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-top: none; /* 移除上边框 */
   border-bottom: 1px solid #E5E5E5;
   width: 100%;
+  flex-wrap: wrap; /* 允许在小屏幕上换行 */
+  margin-top: 0; /* 确保无上边距 */
 }
 
 .search-area {
   display: flex;
   gap: 12px;
+  flex: 1;
+  min-width: 300px; /* 确保搜索区域不会太窄 */
+  margin-right: 12px; /* 添加右侧间距 */
 }
 
 .search-input {
@@ -56,6 +67,7 @@
 .action-area {
   display: flex;
   gap: 12px;
+  flex-wrap: wrap; /* 在小屏幕上允许按钮换行 */
 }
 
 .action-button {
@@ -99,20 +111,22 @@
 .table-container {
   padding: 0;
   flex: 1;
-  overflow: auto;
+  overflow-x: auto;
   width: 100%;
+  -webkit-overflow-scrolling: touch; /* 提高移动端滚动体验 */
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 24px 0;
+  margin: 12px 0; /* 减少表格上下外边距 */
   table-layout: fixed;
+  min-width: 1200px;
 }
 
 .data-table th,
 .data-table td {
-  padding: 16px;
+  padding: 12px 16px; /* 减少单元格内边距 */
   text-align: left;
   border-bottom: 1px solid #E5E5E5;
   white-space: nowrap;
@@ -135,6 +149,52 @@
 
 .data-table tr:hover {
   background-color: #F5F7FA;
+}
+
+/* 表格列宽调整 */
+.data-table th:first-child,
+.data-table td:first-child {
+  width: 40px;
+}
+
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) {
+  width: 100px;
+}
+
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) {
+  width: 120px;
+}
+
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) {
+  width: 120px;
+}
+
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) {
+  width: 200px;
+}
+
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) {
+  width: 120px;
+}
+
+.data-table th:nth-child(7),
+.data-table td:nth-child(7) {
+  width: 160px;
+}
+
+.data-table th:nth-child(8),
+.data-table td:nth-child(8) {
+  width: 80px;
+}
+
+.data-table th:last-child,
+.data-table td:last-child {
+  width: 180px;
 }
 
 /* 状态标签样式 */
@@ -185,7 +245,7 @@
 
 /* 分页样式 */
 .pagination {
-  padding: 24px;
+  padding: 12px 24px; /* 减少分页区域的内边距 */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -297,32 +357,52 @@
 @media screen and (max-width: 768px) {
   .operation-bar {
     flex-direction: column;
-    gap: 16px;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
   }
 
   .search-area {
     width: 100%;
+    min-width: auto;
+    margin-right: 0;
   }
 
   .search-input {
     flex: 1;
+    width: auto;
   }
 
   .action-area {
     width: 100%;
-    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-top: 8px; /* 减少上边距 */
   }
 
   .action-button {
     flex: 1;
-    min-width: 120px;
+    min-width: calc(50% - 6px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 8px;
+    font-size: 13px; /* 减小字体大小 */
   }
 
+  /* 调整表格容器在移动端的样式 */
   .table-container {
     overflow-x: auto;
+    margin: 0 -16px;
+    padding: 0 16px;
+    width: calc(100% + 32px);
   }
-
-  .data-table {
-    min-width: 800px;
+  
+  .data-table th,
+  .data-table td {
+    padding: 10px 12px; /* 进一步减少移动端下单元格的内边距 */
+  }
+  
+  .pagination {
+    padding: 10px 16px; /* 减少分页区域的内边距 */
   }
 } 

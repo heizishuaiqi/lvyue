@@ -226,49 +226,66 @@ const Account = () => {
     alert('导出功能开发中...');
   };
 
+  // 表格渲染
   return (
     <div className="account-page">
-      {/* 搜索和操作区 */}
       <div className="operation-bar">
         <div className="search-area">
           <input
             type="text"
+            className="search-input"
+            placeholder="请输入姓名/手机号"
             value={searchText}
             onChange={handleSearch}
-            placeholder="请输入姓名/手机号"
-            className="search-input"
-            onKeyPress={(e) => {
-              if (e.key === 'Enter') {
-                handleSearchClick();
-              }
-            }}
           />
-          <button className="search-button" onClick={handleSearchClick}>搜索</button>
+          <button className="search-button" onClick={handleSearchClick}>
+            搜索
+          </button>
         </div>
         <div className="action-area">
-          <button className="action-button primary" onClick={handleCreate}>新建账号</button>
-          <button className="action-button" onClick={handleImport}>导入</button>
-          <button className="action-button" onClick={handleExport}>导出</button>
-          <button className="action-button danger" onClick={handleBatchDelete}>批量删除</button>
+          <button className="action-button primary" onClick={handleCreate}>
+            新建账号
+          </button>
+          <button className="action-button" onClick={handleImport}>
+            导入
+          </button>
+          <button className="action-button" onClick={handleExport}>
+            导出
+          </button>
+          <button
+            className="action-button danger"
+            onClick={handleBatchDelete}
+            disabled={selectedAccounts.length === 0}
+          >
+            批量删除
+          </button>
         </div>
       </div>
-
-      {/* 表格区域 */}
+      
       <div className="table-container">
         <table className="data-table">
           <thead>
             <tr>
-              <th style={{ width: '40px' }}>
+              <th>
                 <input
                   type="checkbox"
                   onChange={(e) => {
                     if (e.target.checked) {
-                      setSelectedAccounts(getCurrentPageAccounts().map(account => account.id));
+                      // 选择所有当前页的账号
+                      setSelectedAccounts(
+                        getCurrentPageAccounts().map((account) => account.id)
+                      );
                     } else {
+                      // 取消选择
                       setSelectedAccounts([]);
                     }
                   }}
-                  checked={selectedAccounts.length === getCurrentPageAccounts().length}
+                  checked={
+                    getCurrentPageAccounts().length > 0 &&
+                    getCurrentPageAccounts().every((account) =>
+                      selectedAccounts.includes(account.id)
+                    )
+                  }
                 />
               </th>
               <th>姓名</th>
@@ -282,7 +299,7 @@ const Account = () => {
             </tr>
           </thead>
           <tbody>
-            {getCurrentPageAccounts().map(account => (
+            {getCurrentPageAccounts().map((account) => (
               <tr key={account.id}>
                 <td>
                   <input
@@ -292,7 +309,9 @@ const Account = () => {
                       if (e.target.checked) {
                         setSelectedAccounts([...selectedAccounts, account.id]);
                       } else {
-                        setSelectedAccounts(selectedAccounts.filter(id => id !== account.id));
+                        setSelectedAccounts(
+                          selectedAccounts.filter((id) => id !== account.id)
+                        );
                       }
                     }}
                   />
@@ -310,9 +329,24 @@ const Account = () => {
                 </td>
                 <td>
                   <div className="action-buttons">
-                    <button className="table-button edit" onClick={() => handleEdit(account)}>编辑</button>
-                    <button className="table-button" onClick={() => handleResetPassword(account)}>重置密码</button>
-                    <button className="table-button delete" onClick={() => handleDelete(account)}>删除</button>
+                    <button
+                      className="table-button edit"
+                      onClick={() => handleEdit(account)}
+                    >
+                      编辑
+                    </button>
+                    <button
+                      className="table-button"
+                      onClick={() => handleResetPassword(account)}
+                    >
+                      重置密码
+                    </button>
+                    <button
+                      className="table-button delete"
+                      onClick={() => handleDelete(account)}
+                    >
+                      删除
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -468,6 +502,53 @@ const Account = () => {
           </div>
         </div>
       )}
+
+      <style jsx="true">{`
+        .account-page {
+          max-width: 100%;
+          overflow-x: hidden;
+          margin-top: 0;
+          padding-top: 0;
+          border-top: none;
+          margin-bottom: 0;
+          display: flex;
+          flex-direction: column;
+          position: relative;
+          top: -1px; /* 微调位置以消除任何潜在间隙 */
+        }
+        .table-container {
+          width: 100%;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+        .data-table {
+          margin: 12px 0;
+        }
+        .data-table th,
+        .data-table td {
+          padding: 12px 16px;
+        }
+        .operation-bar {
+          padding: 16px 24px;
+          border-top: none;
+          margin-top: 0;
+          position: relative;
+        }
+        .pagination {
+          padding: 12px 24px;
+        }
+        @media (max-width: 768px) {
+          .operation-bar {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 12px 16px;
+          }
+          .action-area {
+            margin-top: 12px;
+            width: 100%;
+          }
+        }
+      `}</style>
     </div>
   );
 };
