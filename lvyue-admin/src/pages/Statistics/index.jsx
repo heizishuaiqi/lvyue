@@ -11,15 +11,14 @@ const StatisticsLayout = () => {
 
   // 当路由变化时更新选中的菜单项
   useEffect(() => {
-    const path = location.pathname.split('/');
-    const currentPage = path[path.length - 1];
-    
-    if (currentPage === 'statistics') {
-      // 如果是访问 /statistics，默认导航到 /statistics/personal
-      navigate('/statistics/personal');
+    const path = location.pathname;
+    if (path.includes('/statistics/meeting')) {
+      setSelectedKey('meeting');
+    } else if (path.includes('/statistics/personal')) {
       setSelectedKey('personal');
-    } else {
-      setSelectedKey(currentPage);
+    } else if (path === '/statistics') {
+      navigate('/statistics/meeting');
+      setSelectedKey('meeting');
     }
   }, [location.pathname, navigate]);
 
@@ -50,6 +49,7 @@ const StatisticsLayout = () => {
           selectedKeys={[selectedKey]}
           onClick={handleMenuClick}
           items={menuItems}
+          style={{ fontSize: '16px', fontWeight: 500 }}
         />
       </div>
       <div className="statistics-content">

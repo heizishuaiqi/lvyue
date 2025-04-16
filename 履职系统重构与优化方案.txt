@@ -1017,665 +1017,753 @@ CREATE TABLE operation_logs (
 
 ### 1. 代码冗余问题
 1. **表单组件重复实现**
-   - 移动端的报名表单组件在不同文件中存在重复实现
-   - 缺乏统一的表单逻辑抽象
+   - 移动端的报名表单逻辑直接在各页面组件中实现，例如 `registration/index.jsx` 中的表单处理逻辑
+   - 缺乏统一的表单组件抽象，导致相似的验证和处理逻辑在不同页面重复
+   - 表单状态管理分散，每个页面单独维护表单状态
 
 2. **样式定义分散**
-   - CSS样式文件分散在各个组件目录中
-   - 部分样式在App.css和组件CSS文件中重复定义
+   - CSS样式文件分散，部分使用了 module.css，但仍有部分在 App.css 中定义
+   - 缺少统一的设计令牌系统，样式变量重复定义
+   - 存在内联样式和模块化样式混用的情况
 
 3. **模拟数据硬编码**
-   - 会议数据等直接写在组件内部
-   - 缺少统一的数据服务层
-   - 数据格式不一致，散布在不同组件中
-   - 后期替换为真实API困难，需要修改多处代码
-   - 无法模拟网络延迟和错误情况，不利于开发测试
+   - 会议数据、用户数据等直接硬编码在组件内部，如 Statistics/index.jsx 中的 mockStatistics 和 mockMeetings
+   - 没有统一的模拟数据层或服务接口，各页面独立维护模拟数据
+   - 数据格式不一致，分散在不同组件，如成功页面和报名页面的数据结构不完全一致
+   - 页面间数据传递依赖于 React Router 的 state，导致刷新后数据丢失
 
 ### 2. 架构问题
 1. **状态管理不统一**
-   - 混合使用本地状态(useState)和localStorage存储
-   - 缺乏统一的状态管理策略
+   - 混合使用本地状态(useState)和localStorage存储，如 Statistics/index.jsx 中从 localStorage 获取用户信息
+   - 缺乏统一的状态管理策略，导致状态逻辑分散
+   - 用户认证状态存储在 localStorage 中，没有专门的认证上下文管理
 
 2. **路由配置问题**
-   - 移动端路由需要会议ID参数，但访问基础路径时无有效错误处理
-   - 缺少默认路由和重定向机制
+   - 路由配置分散，缺少中心化的路由管理
+   - 直接在页面组件中使用硬编码的路径进行导航
+   - 缺少路由参数验证和路由守卫机制
 
 3. **错误处理机制不统一**
-   - 表单验证错误、网络请求错误处理方式不一致
-   - 缺少全局异常捕获机制
+   - 表单验证采用浏览器原生验证，缺少统一的错误显示和处理
+   - 异常处理简单使用 try-catch，没有全局异常处理机制
+   - 网络请求错误只通过 console.error 和简单的 alert 提示用户
 
 4. **API调用层缺失**
-   - 缺少统一的API调用层
-   - 组件直接使用localStorage或硬编码数据
+   - 没有实现API调用服务层，目前使用模拟数据和 setTimeout 模拟API调用
+   - 缺少统一的数据获取和更新逻辑
+   - 组件直接从 localStorage 获取数据或使用硬编码数据
 
 ### 3. 其他技术细节
 1. **移动端适配不完善**
-   - 使用固定像素值，在不同设备上显示不一致
-   - 缺少响应式设计的系统实现
+   - 部分组件使用固定像素值，可能在不同设备上展示不一致
+   - 响应式设计不够系统化，缺少断点管理
 
-2. **依赖版本问题**
-   - 移动端和管理端使用不同版本的React
-   - 版本不一致导致维护困难
+2. **项目结构不合理**
+   - 部分页面组件过于臃肿，如 registration/index.jsx 和 Statistics/index.jsx
+   - 未充分分离业务逻辑和UI渲染逻辑
+   - 缺少共享组件的有效复用，例如表单控件和卡片组件
 
 3. **缺少必要的加载状态处理**
-   - 用户操作后缺少加载反馈
-   - 缺少加载指示器和骨架屏等用户体验优化
+   - 数据加载状态处理不完善，缺少加载指示器
+   - 表单提交过程中缺少视觉反馈
+   - 无数据状态的展示处理简单
+
+4. **依赖管理问题**
+   - 移动端和管理端项目完全分离，缺少共享代码机制
+   - 项目依赖版本可能不一致，移动端使用 .jsx 而管理端同时使用 .jsx 和 .tsx
 
 ## 二、重构方案
 
 ### 1. 前期规划与设计
-1. **需求分析与系统设计**
-   - 深入理解业务需求，绘制用户流程图
-   - 设计系统架构，确定前后端交互模式
-   - 制定统一的API接口规范
-   - 设计数据库模型，明确实体关系
+1. **需求梳理与系统设计**
+   - 根据当前页面功能，完善用户流程图和交互设计
+   - 重新设计前后端交互模式，基于已有的Supabase架构
+   - 完善API接口规范，确保前后端一致性
 
-2. **技术栈选型**
-   - 前端框架：React 18 (保持移动端和管理端版本一致)
-   - 状态管理：React Context + useReducer
-   - 路由管理：React Router v6
-   - UI组件：按需选择合适的组件库
-   - CSS解决方案：CSS Modules + CSS变量
-   - 后端服务：保持Supabase方案
+2. **技术栈优化**
+   - 前端框架：保持React 18，确保移动端和管理端版本一致
+   - 状态管理：引入React Context + useReducer管理全局状态
+   - UI组件：抽象和封装现有组件，构建组件库
+   - CSS解决方案：统一使用CSS Modules，引入变量系统
+   - 后端服务：维持Supabase架构，完善API接口实现
 
 3. **项目结构优化**
-   - 采用多包管理(monorepo)结构
-   - 抽离共享代码到common包
-   - 分离管理端(admin)和移动端(mobile)代码
+   - 统一移动端(lvyue-wap)和管理端(lvyue-admin)的代码组织结构
+   - 设计共享代码策略，提取公共模块
+   - 重新组织组件结构，按照功能和业务场景划分
 
 ### 2. 代码结构与组织
-1. **组件设计原则**
-   - 采用原子设计模式
-   - 组件职责单一，关注点分离
-   - 通过属性实现组件的可配置性
+1. **组件设计优化**
+   - 将页面组件(如registration/index.jsx)拆分为多个小型组件
+   - 抽象共享组件，如表单控件、卡片组件
+   - 分离业务逻辑和UI渲染，提高组件可测试性和可维护性
 
 2. **状态管理策略**
-   - 全局状态：用户信息、认证状态等通过Context API管理
-   - 页面状态：组件内的useState或useReducer
-   - 表单状态：封装自定义表单钩子
+   - 设计认证上下文(AuthContext)，管理用户登录状态和信息
+   - 使用React Context管理全局状态，如用户信息、会议列表等
+   - 封装自定义hooks管理业务逻辑，如useForm、useMeeting等
 
 3. **API服务层**
-   - 集中管理API请求
-   - 统一错误处理
-   - 实现请求缓存和防抖
-   - **Mock数据管理**：
-     - 创建独立的模拟数据模块，与真实API保持一致的接口结构
-     - 使用环境变量控制API来源（真实/模拟）
-     - 模拟API支持网络延迟和错误模拟
-     - 提供无缝切换机制，便于后期替换为真实API而无需修改业务代码
+   - 建立统一的API服务，处理与Supabase的交互
+   - 实现请求拦截器，处理认证token和错误
+   - 为开发环境创建一致的模拟数据服务，与真实API接口保持一致
 
 ### 3. 前端实现
 1. **样式系统**
-   - 建立设计令牌系统(Design Tokens)
-   - 组件样式使用CSS Modules
-   - 响应式设计使用媒体查询和相对单位
+   - 基于现有样式，构建设计令牌系统(Design Tokens)
+   - 将App.css中的全局样式拆分为模块化样式
+   - 使用CSS变量实现主题和样式统一管理
 
-2. **表单封装与验证**
-   - 创建通用表单组件和验证逻辑
-   - 抽离表单逻辑到自定义钩子
-   - 统一错误处理和展示方式
+2. **表单封装**
+   - 基于registration/index.jsx中的表单逻辑，抽象表单hooks
+   - 创建表单组件库，包含Input、Select、Button等组件
+   - 实现统一的表单验证和错误显示机制
 
-3. **路由配置与权限控制**
-   - 集中管理路由配置
-   - 实现路由守卫，控制页面访问权限
-   - 处理无效路由和重定向
+3. **路由配置**
+   - 集中管理路由配置，实现路由懒加载
+   - 使用路由守卫处理认证和权限控制
+   - 优化URL参数传递，减少对React Router state的依赖
 
 4. **错误处理与状态管理**
-   - 全局错误边界
-   - API请求错误统一处理
-   - 表单验证错误显示与处理
-   - 加载状态和空状态处理
+   - 实现全局错误边界组件，统一处理异常
+   - 为异步操作设计统一的加载状态管理
+   - 优化表单和API错误的显示和处理方式
 
 ### 4. 性能优化与用户体验
 1. **代码分割与懒加载**
-   - 页面级组件使用React.lazy
-   - 动态导入大型组件和库
+   - 对大型页面组件使用React.lazy实现懒加载
+   - 优化CSS和JavaScript资源的加载策略
 
-2. **组件性能优化**
-   - 使用React.memo包装纯组件
-   - 使用useCallback和useMemo避免不必要的重渲染
-   - 合理使用useEffect的依赖数组
+2. **移动端适配优化**
+   - 建立响应式设计系统，使用相对单位替代固定像素
+   - 优化移动设备的交互体验，包括触摸反馈和表单控件尺寸
 
-3. **移动端优化**
-   - 使用虚拟列表渲染大量数据
-   - 图片懒加载与优化
-   - 页面过渡动画提升体验
-
-4. **无障碍与SEO优化**
-   - 语义化HTML结构
-   - 适当的ARIA属性
-   - 键盘导航支持
-
-### 5. 开发流程与工具
-1. **代码规范与质量控制**
-   - ESLint和Prettier配置
-   - Husky和lint-staged实现提交前代码检查
-   - 单元测试和组件测试
-
-2. **文档化**
-   - 组件文档
-   - API接口文档
-   - 项目README和开发指南
-
-3. **开发环境配置**
-   - 开发环境变量管理
-   - 多环境构建配置
-   - 开发工具推荐配置
-
-### 6. 部署与持续集成
-1. **构建优化**
-   - 代码分割策略
-   - 资源压缩与优化
-   - 浏览器缓存策略
-
-2. **自动化部署**
-   - 持续集成和持续部署流程
-   - 环境分离策略
-   - 版本控制和回滚机制
+3. **加载状态与过渡动画**
+   - 为数据加载添加骨架屏或加载指示
+   - 优化页面间转场效果，提升用户体验
+   - 改进表单提交状态的视觉反馈
 
 ## 三、具体实现示例
 
-### 1. 项目结构
+### 1. 项目结构优化
 ```
-/
-├── packages/              # 多包管理
-│   ├── common/            # 公共代码
-│   │   ├── constants/     # 常量定义
-│   │   ├── hooks/         # 自定义钩子
-│   │   ├── utils/         # 工具函数
-│   │   └── services/      # API服务
-│   │
-│   ├── admin/             # 管理端
-│   │   ├── src/
-│   │   │   ├── assets/    # 静态资源
-│   │   │   ├── components/# 组件
-│   │   │   ├── pages/     # 页面
-│   │   │   ├── layouts/   # 布局组件
-│   │   │   └── styles/    # 样式
-│   │   └── package.json
-│   │
-│   └── mobile/            # 移动端
-│       ├── src/
-│       │   ├── assets/    # 静态资源
-│       │   ├── components/# 组件
-│       │   ├── pages/     # 页面
-│       │   └── styles/    # 样式
-│       └── package.json
-│
-├── package.json           # 根项目配置
-└── README.md              # 项目说明
-```
-
-### 2. 样式系统实现
-```css
-/* styles/tokens.css */
-:root {
-  /* 颜色系统 */
-  --color-primary: #0071e3;
-  --color-text-primary: #1d1d1f;
-  --color-text-secondary: #86868b;
-  --color-background: #ffffff;
-  --color-error: #ff4d4f;
-  
-  /* 间距系统 */
-  --spacing-xs: 8px;
-  --spacing-sm: 12px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  
-  /* 圆角 */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  
-  /* 阴影 */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  
-  /* 动画 */
-  --transition-normal: all 0.3s ease;
-}
+src/
+├── assets/         # 静态资源
+├── components/     # 公共组件
+│   ├── common/     # 基础UI组件
+│   │   ├── Button/
+│   │   ├── Input/
+│   │   ├── Select/
+│   │   └── Card/
+│   ├── form/       # 表单相关组件
+│   └── layout/     # 布局组件
+├── contexts/       # 上下文管理
+│   ├── AuthContext.jsx    # 认证上下文
+│   └── MeetingContext.jsx # 会议数据上下文
+├── hooks/          # 自定义钩子
+│   ├── useForm.jsx        # 表单管理
+│   ├── useMeeting.jsx     # 会议数据
+│   └── useAuth.jsx        # 认证管理
+├── pages/          # 页面组件
+│   ├── Login/             # 登录页
+│   ├── Home/              # 首页
+│   ├── Registration/      # 报名页
+│   │   ├── index.jsx            # 主页面
+│   │   ├── components/          # 页面级组件
+│   │   │   ├── MeetingInfo.jsx  # 会议信息组件
+│   │   │   └── DelegateForm.jsx # 委托表单组件
+│   │   └── hooks/               # 页面级钩子
+│   │       └── useRegistration.jsx # 报名逻辑钩子
+│   ├── Success/           # 成功页
+│   └── Statistics/        # 履职统计
+│       ├── index.jsx
+│       └── components/
+│           └── MeetingCard.jsx  # 会议卡片组件
+├── services/       # API服务
+│   ├── api/               # API实现
+│   │   ├── auth.js        # 认证相关
+│   │   ├── meetings.js    # 会议相关
+│   │   └── registration.js # 报名相关
+│   └── mock/              # 模拟数据服务
+│       ├── auth.js
+│       ├── meetings.js
+│       └── registration.js
+├── styles/         # 样式相关
+│   ├── variables.css       # CSS变量定义
+│   └── common.css          # 通用样式
+├── utils/          # 工具函数
+│   ├── validation.js      # 表单验证
+│   ├── formatters.js      # 数据格式化
+│   └── storage.js         # 本地存储
+├── router/         # 路由配置
+│   └── index.jsx          # 路由定义
+├── App.jsx         # 应用入口
+└── main.jsx        # 主入口文件
 ```
 
-### 3. 表单钩子示例
+### 2. 认证上下文实现
 ```jsx
-// hooks/useForm.js
+// contexts/AuthContext.jsx
+import React, { createContext, useReducer, useEffect } from 'react';
+import { authService } from '../services/api/auth';
+
+// 创建上下文
+export const AuthContext = createContext();
+
+// 初始状态
+const initialState = {
+  isAuthenticated: false,
+  user: null,
+  loading: true,
+  error: null
+};
+
+// 状态管理reducer
+function authReducer(state, action) {
+  switch (action.type) {
+    case 'AUTH_INIT':
+      return { ...state, loading: true, error: null };
+    case 'AUTH_SUCCESS':
+      return {
+        ...state,
+        isAuthenticated: true,
+        user: action.payload,
+        loading: false,
+        error: null
+      };
+    case 'AUTH_FAILURE':
+      return {
+        ...state,
+        isAuthenticated: false,
+        user: null,
+        loading: false,
+        error: action.payload
+      };
+    case 'AUTH_LOGOUT':
+      return {
+        ...state,
+        isAuthenticated: false,
+        user: null,
+        loading: false,
+        error: null
+      };
+    default:
+      return state;
+  }
+}
+
+// 上下文提供者组件
+export const AuthProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(authReducer, initialState);
+
+  // 检查登录状态
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        dispatch({ type: 'AUTH_FAILURE' });
+        return;
+      }
+      
+      try {
+        dispatch({ type: 'AUTH_INIT' });
+        const userData = await authService.checkAuth();
+        dispatch({ type: 'AUTH_SUCCESS', payload: userData });
+      } catch (error) {
+        dispatch({ type: 'AUTH_FAILURE', payload: error.message });
+        localStorage.removeItem('token');
+      }
+    };
+    
+    checkAuth();
+  }, []);
+
+  // 登录方法
+  const login = async (credentials) => {
+    try {
+      dispatch({ type: 'AUTH_INIT' });
+      const { user, token } = await authService.login(credentials);
+      localStorage.setItem('token', token);
+      dispatch({ type: 'AUTH_SUCCESS', payload: user });
+      return true;
+    } catch (error) {
+      dispatch({ type: 'AUTH_FAILURE', payload: error.message });
+      return false;
+    }
+  };
+
+  // 退出登录方法
+  const logout = async () => {
+    try {
+      await authService.logout();
+      localStorage.removeItem('token');
+      dispatch({ type: 'AUTH_LOGOUT' });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
+  return (
+    <AuthContext.Provider value={{ ...state, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+```
+
+### 3. 表单钩子实现
+```jsx
+// hooks/useForm.jsx
+import { useState, useCallback } from 'react';
+
 export const useForm = (initialValues, validate) => {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // 处理输入变化
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setValues(prev => ({ ...prev, [name]: value }));
     
-    // 实时验证
-    if (errors[name]) {
+    // 如果字段已被触碰过，则实时验证
+    if (touched[name]) {
       validateField(name, value);
     }
-  };
+  }, [touched]);
+  
+  // 处理字段失焦
+  const handleBlur = useCallback((e) => {
+    const { name } = e.target;
+    setTouched(prev => ({ ...prev, [name]: true }));
+    validateField(name, values[name]);
+  }, [values]);
   
   // 验证单个字段
-  const validateField = (name, value) => {
-    if (validate) {
-      const fieldError = validate[name] ? validate[name](value, values) : null;
-      setErrors(prev => ({ ...prev, [name]: fieldError }));
-      return !fieldError;
-    }
-    return true;
-  };
+  const validateField = useCallback((name, value) => {
+    if (!validate) return null;
+    
+    const fieldError = validate[name] ? validate[name](value, values) : null;
+    setErrors(prev => ({ ...prev, [name]: fieldError }));
+    return !fieldError;
+  }, [values, validate]);
   
   // 验证整个表单
-  const validateForm = () => {
-    if (!validate) return {};
+  const validateForm = useCallback(() => {
+    if (!validate) return true;
     
     const formErrors = {};
+    let isValid = true;
+    
     Object.keys(values).forEach(key => {
       if (validate[key]) {
         const error = validate[key](values[key], values);
-        if (error) formErrors[key] = error;
+        if (error) {
+          formErrors[key] = error;
+          isValid = false;
+        }
       }
     });
     
     setErrors(formErrors);
-    return formErrors;
-  };
+    // 标记所有字段为已触碰
+    const allTouched = Object.keys(values).reduce((obj, key) => {
+      obj[key] = true;
+      return obj;
+    }, {});
+    setTouched(allTouched);
+    
+    return isValid;
+  }, [values, validate]);
   
   // 提交表单
-  const handleSubmit = (callback) => async (e) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(async (onSubmit) => {
+    setIsSubmitting(true);
     
-    const formErrors = validateForm();
-    if (Object.keys(formErrors).length === 0) {
-      setIsSubmitting(true);
-      try {
-        await callback(values);
-      } catch (error) {
-        console.error('Form submission error:', error);
-      } finally {
+    try {
+      const isValid = validateForm();
+      if (!isValid) {
         setIsSubmitting(false);
+        return false;
       }
+      
+      await onSubmit(values);
+      return true;
+    } catch (error) {
+      console.error('Form submission error:', error);
+      return false;
+    } finally {
+      setIsSubmitting(false);
     }
-  };
+  }, [values, validateForm]);
+  
+  // 重置表单
+  const resetForm = useCallback(() => {
+    setValues(initialValues);
+    setErrors({});
+    setTouched({});
+    setIsSubmitting(false);
+  }, [initialValues]);
   
   return {
     values,
     errors,
+    touched,
     isSubmitting,
     handleChange,
+    handleBlur,
     handleSubmit,
-    setValues,
-    validateField,
-    validateForm
+    resetForm,
+    setValues
   };
 };
 ```
 
-### 4. API服务层示例
+### 4. API服务实现
 ```jsx
-// services/api.js
+// services/api/client.js
 import { supabase } from './supabase';
 
-export const api = {
-  // 会议相关
-  meetings: {
-    get: async (id) => {
-      try {
-        const { data, error } = await supabase
-          .from('meetings')
-          .select('*')
-          .eq('id', id)
-          .single();
-          
-        if (error) throw error;
-        return data;
-      } catch (error) {
-        console.error('Error fetching meeting:', error);
-        throw error;
-      }
-    },
-    
-    list: async (params = {}) => {
-      try {
-        let query = supabase.from('meetings').select('*');
-        
-        // 应用过滤条件
-        if (params.type) {
-          query = query.eq('type', params.type);
-        }
-        
-        if (params.search) {
-          query = query.ilike('name', `%${params.search}%`);
-        }
-        
-        // 应用分页
-        if (params.page && params.pageSize) {
-          const from = (params.page - 1) * params.pageSize;
-          const to = from + params.pageSize - 1;
-          query = query.range(from, to);
-        }
-        
-        // 应用排序
-        if (params.orderBy) {
-          query = query.order(params.orderBy, { ascending: params.ascending !== false });
-        } else {
-          query = query.order('created_at', { ascending: false });
-        }
-        
-        const { data, error, count } = await query;
-        
-        if (error) throw error;
-        return { data, count };
-      } catch (error) {
-        console.error('Error fetching meetings:', error);
-        throw error;
-      }
-    },
-    
-    // 其他方法...
-  },
+// 创建API客户端
+const createClient = () => {
+  // 添加认证token到请求
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('token');
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  };
   
-  // 报名相关
-  registrations: {
-    // 创建报名
-    create: async (data) => {
-      try {
-        const { data: result, error } = await supabase
-          .from('registrations')
-          .insert([data])
-          .select();
-          
-        if (error) throw error;
-        return result[0];
-      } catch (error) {
-        console.error('Error creating registration:', error);
-        throw error;
-      }
-    },
-    
-    // 其他方法...
-  },
-  
-  // 用户相关
-  users: {
-    // 方法实现...
-  },
-  
-  // 统计相关
-  statistics: {
-    // 方法实现...
-  },
-};
-```
-
-### 5. Mock数据服务实现
-```jsx
-// services/mockData/index.js
-// 统一导出所有模拟数据
-import { meetingsMock } from './meetings';
-import { registrationsMock } from './registrations';
-import { usersMock } from './users';
-import { statisticsMock } from './statistics';
-
-export const mockData = {
-  meetings: meetingsMock,
-  registrations: registrationsMock,
-  users: usersMock,
-  statistics: statisticsMock
-};
-
-// services/mockApi.js
-// 基于模拟数据的API服务，与真实API接口保持一致
-import { mockData } from './mockData';
-
-export const mockApi = {
-  // 会议相关
-  meetings: {
-    get: async (id) => {
-      // 模拟网络延迟
-      await new Promise(resolve => setTimeout(resolve, 300));
-      const meeting = mockData.meetings.getById(id);
+  // 基础请求方法
+  const request = async ({ table, method, path, data, query }) => {
+    try {
+      let request;
       
-      if (!meeting) {
-        throw new Error('Meeting not found');
+      switch (method) {
+        case 'GET':
+          request = supabase.from(table).select(query || '*');
+          break;
+        case 'GET_ONE':
+          request = supabase.from(table).select(query || '*').eq('id', path).single();
+          break;
+        case 'POST':
+          request = supabase.from(table).insert([data]).select();
+          break;
+        case 'PUT':
+          request = supabase.from(table).update(data).eq('id', path).select();
+          break;
+        case 'DELETE':
+          request = supabase.from(table).delete().eq('id', path);
+          break;
+        default:
+          throw new Error(`Unsupported method: ${method}`);
       }
       
-      return meeting;
-    },
-    
-    list: async (params = {}) => {
-      // 模拟网络延迟
-      await new Promise(resolve => setTimeout(resolve, 500));
+      const { data: responseData, error } = await request;
       
-      let data = [...mockData.meetings.list];
+      if (error) throw error;
       
-      // 模拟过滤逻辑
-      if (params.type) {
-        data = data.filter(meeting => meeting.type === params.type);
-      }
-      
-      if (params.search) {
-        data = data.filter(meeting => 
-          meeting.name.toLowerCase().includes(params.search.toLowerCase())
-        );
-      }
-      
-      // 模拟分页
-      const total = data.length;
-      if (params.page && params.pageSize) {
-        const start = (params.page - 1) * params.pageSize;
-        const end = start + params.pageSize;
-        data = data.slice(start, end);
-      }
-      
-      return { data, count: total };
+      return method === 'POST' ? responseData[0] : responseData;
+    } catch (error) {
+      console.error(`API error: ${method} ${table}/${path}`, error);
+      throw error;
     }
+  };
+  
+  return { request };
+};
+
+export const apiClient = createClient();
+
+// services/api/meetings.js
+import { apiClient } from './client';
+
+export const meetingsService = {
+  // 获取会议详情
+  getMeeting: (id) => {
+    return apiClient.request({
+      table: 'meetings',
+      method: 'GET_ONE',
+      path: id
+    });
   },
   
-  // 其他API方法实现...
-};
-
-// services/apiClient.js
-// 统一API客户端，根据环境切换真实或模拟API
-import { api } from './api';
-import { mockApi } from './mockApi';
-
-// 根据环境变量决定使用真实API还是模拟API
-const USE_MOCK = process.env.REACT_APP_USE_MOCK === 'true';
-
-// 导出统一的API客户端
-export const apiClient = USE_MOCK ? mockApi : api;
-
-/*
-使用示例:
-import { apiClient } from './services/apiClient';
-
-// 在组件中使用
-const Component = () => {
-  const [meeting, setMeeting] = useState(null);
-  
-  useEffect(() => {
-    const fetchMeeting = async () => {
-      try {
-        const data = await apiClient.meetings.get('1');
-        setMeeting(data);
-      } catch (error) {
-        console.error('Failed to fetch meeting:', error);
-      }
-    };
+  // 获取会议列表
+  getMeetings: (params = {}) => {
+    let query = '*';
     
-    fetchMeeting();
-  }, []);
+    return apiClient.request({
+      table: 'meetings',
+      method: 'GET',
+      query
+    });
+  },
   
-  // 组件渲染...
+  // 创建会议报名
+  createRegistration: (registrationData) => {
+    return apiClient.request({
+      table: 'registrations',
+      method: 'POST',
+      data: registrationData
+    });
+  }
 };
-*/
 ```
 
-### 6. 权限控制实现
-```jsx
-// components/PrivateRoute.jsx
-import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import LoadingScreen from './LoadingScreen';
-
-const PrivateRoute = ({ children, requiredRole = null }) => {
-  const { isAuthenticated, user, loading } = useAuth();
-  const location = useLocation();
-  
-  // 显示加载状态
-  if (loading) {
-    return <LoadingScreen />;
-  }
-  
-  // 检查认证状态
-  if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-  
-  // 检查角色权限(如果需要)
-  if (requiredRole && user.role !== requiredRole) {
-    return <Navigate to="/unauthorized" replace />;
-  }
-  
-  // 通过所有检查，渲染子组件
-  return children;
-};
-
-export default PrivateRoute;
-```
-
-### 7. 移动端报名表单组件
+### 5. 移动端报名页面重构
 ```jsx
 // pages/Registration/index.jsx
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useRegistrationForm } from '../../hooks/useRegistrationForm';
-import MeetingInfoCard from '../../components/MeetingInfoCard';
-import RoleSelector from '../../components/RoleSelector';
-import BasicInfoFields from '../../components/BasicInfoFields';
-import AttendanceTypeSelector from '../../components/AttendanceTypeSelector';
-import DelegateInfoFields from '../../components/DelegateInfoFields';
-import SubmitButton from '../../components/SubmitButton';
+import { useParams } from 'react-router-dom';
+import { useRegistration } from './hooks/useRegistration';
+import MeetingInfo from './components/MeetingInfo';
+import RoleSelector from '../../components/form/RoleSelector';
+import BasicInfoForm from './components/BasicInfoForm';
+import DelegateForm from './components/DelegateForm';
+import SubmitButton from '../../components/common/Button/SubmitButton';
 import styles from './Registration.module.css';
 
 const RegistrationPage = () => {
   const { meetingId } = useParams();
-  const navigate = useNavigate();
-  const { 
-    formData, 
-    errors, 
-    isSubmitting, 
-    step, 
-    setStep,
-    handleChange, 
-    handleSubmit,
-    meeting
-  } = useRegistrationForm(meetingId);
+  const {
+    loading,
+    meeting,
+    formState,
+    step,
+    canDelegate,
+    handleRoleSelect,
+    handleInputChange,
+    handleBlur,
+    handleAttendTypeChange,
+    handleSubmit
+  } = useRegistration(meetingId);
   
-  // 处理表单提交
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    const success = await handleSubmit();
-    if (success) {
-      navigate(`/success?meetingId=${meetingId}`);
-    }
-  };
-  
-  // 检查是否可以委托
-  const canDelegate = ['director', 'standing_director', 'supervisor'].includes(formData.role);
+  if (loading) {
+    return <div className={styles.loading}>加载中...</div>;
+  }
   
   return (
     <div className={styles.container}>
       {/* 会议信息卡片 */}
-      <MeetingInfoCard meeting={meeting} />
+      <MeetingInfo meeting={meeting} />
       
       {/* 报名表单 */}
-      <form onSubmit={onSubmit} className={styles.form}>
-        {/* 角色选择 */}
-        <RoleSelector 
-          value={formData.role}
-          onChange={handleChange}
-          error={errors.role}
-          onRoleSelect={(role) => {
-            handleChange({ target: { name: 'role', value: role } });
-            setStep('form');
-          }}
-        />
+      <div className={styles.formContainer}>
+        <h2 className={styles.formTitle}>报名信息</h2>
         
-        {step === 'form' && (
-          <>
-            {/* 基本信息 */}
-            <BasicInfoFields 
-              formData={formData}
-              errors={errors}
-              onChange={handleChange}
-            />
-            
-            {/* 出席方式选择 - 仅特定角色可见 */}
-            {canDelegate && (
-              <AttendanceTypeSelector
-                value={formData.attendType}
-                onChange={handleChange}
-                error={errors.attendType}
+        <form onSubmit={handleSubmit}>
+          {/* 角色选择 */}
+          <RoleSelector
+            value={formState.values.role}
+            onChange={handleRoleSelect}
+            error={formState.errors.role}
+          />
+          
+          {step === 'form' && (
+            <>
+              {/* 基本信息表单 */}
+              <BasicInfoForm
+                values={formState.values}
+                errors={formState.errors}
+                touched={formState.touched}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
               />
-            )}
-            
-            {/* 委托信息 - 仅选择委托出席时可见 */}
-            {canDelegate && formData.attendType === '委托代表' && (
-              <DelegateInfoFields
-                formData={formData}
-                errors={errors}
-                onChange={handleChange}
+              
+              {/* 出席方式与委托表单 */}
+              {canDelegate && (
+                <>
+                  <div className={styles.formItem}>
+                    <label>出席方式</label>
+                    <select
+                      name="attendType"
+                      value={formState.values.attendType}
+                      onChange={handleAttendTypeChange}
+                      className={styles.select}
+                    >
+                      <option value="本人出席">本人出席</option>
+                      <option value="委托代表">委托代表出席</option>
+                    </select>
+                  </div>
+                  
+                  {formState.values.attendType === '委托代表' && (
+                    <DelegateForm
+                      values={formState.values}
+                      errors={formState.errors}
+                      touched={formState.touched}
+                      onChange={handleInputChange}
+                      onBlur={handleBlur}
+                    />
+                  )}
+                </>
+              )}
+              
+              {/* 提交按钮 */}
+              <SubmitButton
+                isSubmitting={formState.isSubmitting}
+                text="提交报名"
+                loadingText="提交中..."
               />
-            )}
-            
-            {/* 提交按钮 */}
-            <SubmitButton 
-              isSubmitting={isSubmitting}
-              text="提交报名"
-              loadingText="提交中..."
-            />
-          </>
-        )}
-      </form>
+            </>
+          )}
+        </form>
+      </div>
     </div>
   );
 };
 
 export default RegistrationPage;
+
+// pages/Registration/hooks/useRegistration.jsx
+import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useForm } from '../../../hooks/useForm';
+import { meetingsService } from '../../../services/api/meetings';
+import { formValidation } from '../../../utils/validation';
+
+export const useRegistration = (meetingId) => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [meeting, setMeeting] = useState(null);
+  const [step, setStep] = useState('role');
+  
+  // 初始化表单
+  const formState = useForm(
+    {
+      role: '',
+      name: '',
+      phone: '',
+      workUnit: '',
+      workPosition: '',
+      societyPosition: '',
+      attendType: '本人出席',
+      delegateName: '',
+      delegatePhone: '',
+      delegateUnit: '',
+      delegatePosition: ''
+    },
+    formValidation
+  );
+  
+  // 加载会议数据
+  useEffect(() => {
+    const fetchMeeting = async () => {
+      try {
+        setLoading(true);
+        const data = await meetingsService.getMeeting(meetingId);
+        setMeeting(data);
+      } catch (error) {
+        console.error('Failed to fetch meeting:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    if (meetingId) {
+      fetchMeeting();
+    }
+  }, [meetingId]);
+  
+  // 判断是否可以委托出席
+  const canDelegate = ['director', 'standing_director', 'supervisor'].includes(formState.values.role);
+  
+  // 处理角色选择
+  const handleRoleSelect = useCallback((e) => {
+    const value = e.target.value;
+    formState.handleChange(e);
+    
+    if (value) {
+      setStep('form');
+    } else {
+      setStep('role');
+    }
+  }, [formState]);
+  
+  // 处理出席方式变更
+  const handleAttendTypeChange = useCallback((e) => {
+    formState.handleChange(e);
+    
+    // 如果切换到本人出席，清空委托信息
+    if (e.target.value === '本人出席') {
+      formState.setValues(prev => ({
+        ...prev,
+        delegateName: '',
+        delegatePhone: '',
+        delegateUnit: '',
+        delegatePosition: ''
+      }));
+    }
+  }, [formState]);
+  
+  // 处理表单提交
+  const handleSubmit = useCallback(async (e) => {
+    e.preventDefault();
+    
+    const success = await formState.handleSubmit(async (values) => {
+      // 构建报名数据
+      const registrationData = {
+        meeting_id: meetingId,
+        name: values.name,
+        phone: values.phone,
+        work_unit: values.workUnit,
+        work_position: values.workPosition,
+        society_position: values.societyPosition,
+        attend_type: values.attendType,
+        delegate_name: values.delegateName,
+        delegate_phone: values.delegatePhone,
+        delegate_unit: values.delegateUnit,
+        delegate_position: values.delegatePosition
+      };
+      
+      // 提交报名
+      const result = await meetingsService.createRegistration(registrationData);
+      return result;
+    });
+    
+    if (success) {
+      // 跳转到成功页面，传递会议信息和报名信息
+      navigate('/success', { 
+        state: { 
+          meetingInfo: meeting,
+          formData: formState.values
+        } 
+      });
+    }
+  }, [meetingId, meeting, formState, navigate]);
+  
+  return {
+    loading,
+    meeting,
+    formState,
+    step,
+    canDelegate,
+    handleRoleSelect,
+    handleInputChange: formState.handleChange,
+    handleBlur: formState.handleBlur,
+    handleAttendTypeChange,
+    handleSubmit
+  };
+};
 ```
 
 ## 四、实施建议
 
 1. **分阶段实施**
-   - 第一阶段：项目结构重构，建立基础架构
-   - 第二阶段：核心组件和服务层重构
-   - 第三阶段：页面组件重构和功能优化
-   - 第四阶段：性能优化和用户体验提升
+   - 第一阶段：抽象共享组件和基础服务层
+   - 第二阶段：实现状态管理和API服务
+   - 第三阶段：重构页面组件和业务逻辑
+   - 第四阶段：性能优化和体验提升
 
 2. **保持兼容性**
-   - 在重构过程中保持对现有API的兼容
-   - 采用适配器模式过渡旧组件和新组件
+   - 在重构过程中保持对现有页面和功能的兼容
+   - 逐步替换硬编码数据为API服务调用
 
 3. **测试策略**
    - 为重构的组件和服务编写单元测试
-   - 实施端到端测试确保功能完整性
-   - 进行性能测试评估优化效果
+   - 进行端到端测试确保功能完整性
 
 4. **文档和知识共享**
    - 及时更新项目文档
-   - 组织团队分享重构经验和最佳实践
-   - 建立组件库文档，方便团队使用
-
-5. **Mock数据向真实API过渡**
-   - 采用分阶段替换策略，先实现核心接口，再逐步完善
-   - 建立详细的API接口文档，确保前后端接口一致性
-   - 开发环境保留Mock选项，方便本地调试和测试
-   - 实施并行测试策略，确保API替换前后功能一致
-   - 使用特性开关(Feature Toggle)控制API切换，便于快速回退
+   - 完善API接口文档和组件使用说明
 
 通过以上优化方案，可以显著提高代码质量、开发效率和用户体验，构建一个更加健壮、易于维护的履职系统。 

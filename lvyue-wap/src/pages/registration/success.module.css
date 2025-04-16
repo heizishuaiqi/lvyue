@@ -1,0 +1,129 @@
+.container {
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #f5f7fa;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.successIcon {
+  width: 60px;
+  height: 60px;
+  background: #07c160;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  color: white;
+  font-size: 32px;
+}
+
+.title {
+  font-size: 22px;
+  color: #1d1d1f;
+  text-align: center;
+  margin: 0 0 12px;
+  font-weight: 600;
+}
+
+.message {
+  color: #86868b;
+  text-align: center;
+  margin: 0 0 32px;
+  font-size: 15px;
+}
+
+.section {
+  border-top: 1px solid #e5e5ea;
+  padding-top: 24px;
+  margin-top: 24px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  color: #1d1d1f;
+  margin: 0 0 20px;
+  font-weight: 600;
+}
+
+.infoItem {
+  display: flex;
+  margin-bottom: 12px;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.infoItem:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  color: #86868b;
+  width: 90px;
+  flex-shrink: 0;
+}
+
+.delegateSection {
+  background: #f7f8fa;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.delegateTitle {
+  font-size: 16px;
+  color: #1d1d1f;
+  margin: 0 0 16px;
+  font-weight: 600;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.button {
+  flex: 1;
+  height: 48px;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.button:first-child {
+  background: #f5f7fa;
+  color: #1d1d1f;
+}
+
+.button:first-child:hover {
+  background: #e8e8e8;
+}
+
+.closeButton {
+  background: #0071e3;
+  color: #fff;
+}
+
+.closeButton:hover {
+  background: #0077ed;
+}
+
+.button:active {
+  transform: scale(0.98);
+} 

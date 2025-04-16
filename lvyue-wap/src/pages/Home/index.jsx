@@ -52,7 +52,7 @@ const HomePage = () => {
             onClick={() => navigate('/academic')}
           >
             <span className={styles.menuIcon}>🎓</span>
-            <span>学术会议</span>
+            <span>学术会议履职申报</span>
           </div>
         </div>
       </div>

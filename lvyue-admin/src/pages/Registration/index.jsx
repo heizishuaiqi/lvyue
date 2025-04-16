@@ -10,6 +10,7 @@ const Registration = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
   const [selectedMeeting, setSelectedMeeting] = useState(null);
+  const [activeTab, setActiveTab] = useState('registration'); // 新增：当前激活的tab
 
   // 详情弹窗状态
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
@@ -318,8 +319,82 @@ const Registration = () => {
     setIsDetailModalVisible(true);
   };
 
+  // 根据当前tab返回表格列
+  const getTableColumns = () => {
+    const commonColumns = [
+      "姓名",
+      "手机号码",
+      "身份",
+      "学会职务",
+      "单位名称",
+      "单位职务",
+      "会议名称",
+      "会议时间",
+      "出席方式",
+    ];
+
+    if (activeTab === 'registration') {
+      return [...commonColumns, "审核状态", "同步状态", "操作"];
+    } else {
+      return [...commonColumns, "操作"];
+    }
+  };
+
+  // 根据当前tab返回操作按钮
+  const renderActionButtons = (registration) => {
+    if (activeTab === 'registration') {
+      return (
+        <>
+          <button 
+            className="table-button primary"
+            onClick={() => handleOpenAudit(registration)}
+          >
+            审核
+          </button>
+          <button 
+            className="table-button info"
+            onClick={() => handleViewDetail(registration)}
+          >
+            详情
+          </button>
+          <button 
+            className="table-button success"
+            onClick={() => handleOpenSync(registration)}
+          >
+            同步
+          </button>
+        </>
+      );
+    } else {
+      return (
+        <button 
+          className="table-button info"
+          onClick={() => handleViewDetail(registration)}
+        >
+          详情
+        </button>
+      );
+    }
+  };
+
   return (
     <div className="registration-page">
+      {/* Tab切换区域 */}
+      <div className="tab-container">
+        <div 
+          className={`tab-item ${activeTab === 'registration' ? 'active' : ''}`}
+          onClick={() => setActiveTab('registration')}
+        >
+          报名信息
+        </div>
+        <div 
+          className={`tab-item ${activeTab === 'attendance' ? 'active' : ''}`}
+          onClick={() => setActiveTab('attendance')}
+        >
+          参会信息（履职依据）
+        </div>
+      </div>
+
       {/* 搜索和筛选区 */}
       <div className="operation-bar">
         <div className="filter-area">
@@ -347,7 +422,9 @@ const Registration = () => {
           <button className="search-button">搜索</button>
         </div>
         <div className="action-area">
-          <button className="action-button">导出报名信息</button>
+          <button className="action-button">
+            {activeTab === 'registration' ? '导出报名信息' : '导入参会信息'}
+          </button>
         </div>
       </div>
 
@@ -356,18 +433,9 @@ const Registration = () => {
         <table className="data-table">
           <thead>
             <tr>
-              <th>姓名</th>
-              <th>手机号码</th>
-              <th>身份</th>
-              <th>学会职务</th>
-              <th>单位名称</th>
-              <th>单位职务</th>
-              <th>会议名称</th>
-              <th>会议时间</th>
-              <th>出席方式</th>
-              <th>审核状态</th>
-              <th>同步状态</th>
-              <th>操作</th>
+              {getTableColumns().map((column, index) => (
+                <th key={index}>{column}</th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -382,40 +450,27 @@ const Registration = () => {
                 <td>{registration.meetingName}</td>
                 <td>{registration.meetingDate}</td>
                 <td>{registration.attendType}</td>
-                <td>
-                  <span className={`status-tag ${
-                    registration.status === '审核通过' ? 'success' : 'reject'
-                  }`}>
-                    {registration.status}
-                  </span>
-                </td>
-                <td>
-                  <span className={`status-tag ${
-                    registration.syncStatus === '已同步' ? 'success' : 'pending'
-                  }`}>
-                    {registration.syncStatus}
-                  </span>
-                </td>
+                {activeTab === 'registration' && (
+                  <>
+                    <td>
+                      <span className={`status-tag ${
+                        registration.status === '审核通过' ? 'success' : 'reject'
+                      }`}>
+                        {registration.status}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`status-tag ${
+                        registration.syncStatus === '已同步' ? 'success' : 'pending'
+                      }`}>
+                        {registration.syncStatus}
+                      </span>
+                    </td>
+                  </>
+                )}
                 <td>
                   <div className="action-buttons">
-                    <button 
-                      className="table-button primary"
-                      onClick={() => handleOpenAudit(registration)}
-                    >
-                      审核
-                    </button>
-                    <button 
-                      className="table-button info"
-                      onClick={() => handleViewDetail(registration)}
-                    >
-                      详情
-                    </button>
-                    <button 
-                      className="table-button success"
-                      onClick={() => handleOpenSync(registration)}
-                    >
-                      同步
-                    </button>
+                    {renderActionButtons(registration)}
                   </div>
                 </td>
               </tr>
@@ -461,22 +516,12 @@ const Registration = () => {
       {/* 审核弹窗 */}
       <AuditModal
         visible={isAuditModalVisible}
-        userInfo={{
-          name: selectedAuditRegistration?.name,
-          unit: selectedAuditRegistration?.workUnit,
-          position: selectedAuditRegistration?.workPosition,
-          phone: selectedAuditRegistration?.phone
-        }}
-        initialStatus={selectedAuditRegistration?.status === '审核未通过' ? 2 : 1}
+        registration={selectedAuditRegistration}
         onClose={() => {
           setIsAuditModalVisible(false);
           setSelectedAuditRegistration(null);
         }}
-        onConfirm={({status}) => {
-          if (selectedAuditRegistration) {
-            handleAudit(status, selectedAuditRegistration);
-          }
-        }}
+        onAudit={handleAudit}
       />
       
       {/* 同步弹窗 */}

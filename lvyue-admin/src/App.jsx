@@ -7,7 +7,9 @@ import MeetingManagement from './pages/MeetingManagement';
 import Registration from './pages/Registration/index';
 import StatisticsLayout from './pages/Statistics/index';
 import PersonalStatistics from './pages/Statistics/PersonalStatistics';
+import PersonalDetail from './pages/Statistics/PersonalDetail';
 import MeetingStatistics from './pages/Statistics/MeetingStatistics';
+import MeetingDetail from './pages/Statistics/MeetingDetail';
 import AcademicMeeting from './pages/AcademicMeeting/index';
 import './App.css';
 
@@ -39,6 +41,8 @@ const App = () => {
             <Route index element={<Navigate to="/statistics/personal" replace />} />
             <Route path="personal" element={<PersonalStatistics />} />
             <Route path="meeting" element={<MeetingStatistics />} />
+            <Route path=":id" element={<PersonalDetail />} />
+            <Route path="meeting/:id" element={<MeetingDetail />} />
           </Route>
         </Route>
       </Routes>

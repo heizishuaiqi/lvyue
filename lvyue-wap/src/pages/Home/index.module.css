@@ -90,6 +90,9 @@
   font-size: 16px;
   color: #333;
   font-weight: 500;
+  text-align: center;
+  word-break: keep-all;
+  white-space: nowrap;
 }
 
 /* 响应式设计 */

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './index.module.css';
 
 // 报名页面组件
 const RegistrationPage = () => {
-  // 状态管理
+  const navigate = useNavigate();
   const [step, setStep] = useState('role'); // 'role': 只显示角色选择, 'form': 显示完整表单
   const [selectedRole, setSelectedRole] = useState('');
   const [formData, setFormData] = useState({
@@ -18,6 +19,7 @@ const RegistrationPage = () => {
     delegateUnit: '',
     delegatePosition: ''
   });
+  const [submitting, setSubmitting] = useState(false);
 
   // 角色选项
   const roleOptions = [
@@ -68,10 +70,31 @@ const RegistrationPage = () => {
   };
 
   // 处理表单提交
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('提交的表单数据：', { role: selectedRole, ...formData });
-    alert('表单提交成功');
+    
+    try {
+      setSubmitting(true);
+      // TODO: 这里添加实际的API调用
+      await new Promise(resolve => setTimeout(resolve, 1000)); // 模拟API调用
+      
+      // 提交成功后跳转到成功页面
+      navigate('/success', { 
+        state: { 
+          formData: { role: selectedRole, ...formData },
+          meetingInfo: {
+            title: '2024年第一季度工作会议',
+            time: '2024年3月15日 14:00-16:00',
+            location: '总部大楼3层会议室A'
+          }
+        } 
+      });
+    } catch (error) {
+      console.error('提交失败：', error);
+      alert('提交失败，请稍后重试');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -261,8 +284,12 @@ const RegistrationPage = () => {
               )}
 
               {/* 提交按钮 */}
-              <button type="submit" className={styles.submitButton}>
-                提交报名
+              <button 
+                type="submit" 
+                className={styles.submitButton}
+                disabled={submitting}
+              >
+                {submitting ? '提交中...' : '提交报名'}
               </button>
             </div>
           )}

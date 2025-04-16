@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Card, Input, DatePicker, Button, Select, message, Tag, Space, Modal, Tooltip } from 'antd';
+import { Table, Card, Input, DatePicker, Button, Select, message, Tag, Space, Tooltip } from 'antd';
 import { SearchOutlined, DownloadOutlined, EyeOutlined, BarChartOutlined } from '@ant-design/icons';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import './Statistics.css';
+import { useNavigate } from 'react-router-dom';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -23,6 +24,7 @@ const getFirstDayOfMonth = () => {
 };
 
 const MeetingStatistics = () => {
+  const navigate = useNavigate();
   // 状态管理
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -38,10 +40,6 @@ const MeetingStatistics = () => {
     meetingType: 'all'
   });
   const [dateRange, setDateRange] = useState([null, null]);
-  const [detailVisible, setDetailVisible] = useState(false);
-  const [currentMeeting, setCurrentMeeting] = useState(null);
-  const [attendees, setAttendees] = useState([]);
-  const [attendeeLoading, setAttendeeLoading] = useState(false);
 
   // 加载会议统计数据
   const fetchData = async (params = {}) => {
@@ -230,83 +228,9 @@ const MeetingStatistics = () => {
     // TODO: 实现导出Excel功能
   };
 
-  // 获取会议详情参会人员
-  const fetchMeetingAttendees = async (meetingId) => {
-    setAttendeeLoading(true);
-    try {
-      // TODO: 替换为实际API调用
-      // 模拟API响应数据
-      const response = {
-        code: 200,
-        data: [
-          {
-            id: '1',
-            name: '张三',
-            phone: '13800138000',
-            role: '理事',
-            workUnit: '中国电子科技集团',
-            workPosition: '高级工程师',
-            attendType: 'self'
-          },
-          {
-            id: '2',
-            name: '李四',
-            phone: '13900139000',
-            role: '常务理事',
-            workUnit: '华为技术有限公司',
-            workPosition: '技术总监',
-            attendType: 'self'
-          },
-          {
-            id: '3',
-            name: '王五',
-            phone: '13700137000',
-            role: '监事',
-            workUnit: '清华大学',
-            workPosition: '教授',
-            attendType: 'self'
-          },
-          {
-            id: '4',
-            name: '赵六',
-            phone: '13600136000',
-            role: '分支机构负责人',
-            workUnit: '中国科学院计算所',
-            workPosition: '研究员',
-            attendType: 'delegate',
-            delegateName: '钱七',
-            delegatePhone: '13500135000'
-          }
-        ]
-      };
-      
-      setAttendees(response.data);
-    } catch (error) {
-      console.error('获取参会人员数据失败:', error);
-      message.error('获取参会人员数据失败，请稍后重试');
-    } finally {
-      setAttendeeLoading(false);
-    }
-  };
-
   // 查看会议详情
   const handleViewDetail = (record) => {
-    setCurrentMeeting(record);
-    fetchMeetingAttendees(record.id);
-    setDetailVisible(true);
-  };
-
-  // 关闭详情弹窗
-  const handleDetailClose = () => {
-    setDetailVisible(false);
-    setCurrentMeeting(null);
-    setAttendees([]);
-  };
-
-  // 导出参会人员名单
-  const handleExportAttendees = () => {
-    message.success('导出参会人员名单成功');
-    // TODO: 实现导出参会人员功能
+    navigate(`/statistics/meeting/${record.id}`);
   };
 
   // 获取会议类型标签
@@ -405,53 +329,6 @@ const MeetingStatistics = () => {
     }
   ];
 
-  // 参会人员表格列定义
-  const attendeeColumns = [
-    {
-      title: '姓名',
-      dataIndex: 'name',
-      key: 'name',
-      width: 100
-    },
-    {
-      title: '手机号码',
-      dataIndex: 'phone',
-      key: 'phone',
-      width: 150
-    },
-    {
-      title: '学会职务',
-      dataIndex: 'role',
-      key: 'role',
-      width: 150
-    },
-    {
-      title: '工作单位',
-      dataIndex: 'workUnit',
-      key: 'workUnit',
-      width: 200
-    },
-    {
-      title: '单位职务',
-      dataIndex: 'workPosition',
-      key: 'workPosition',
-      width: 150
-    },
-    {
-      title: '出席方式',
-      dataIndex: 'attendType',
-      key: 'attendType',
-      width: 120,
-      render: (type, record) => {
-        // 检查当前会议类型是否为学术会议
-        if (currentMeeting && currentMeeting.type === 'academic') {
-          return '--';
-        }
-        return type === 'self' ? <Tag color="blue">本人出席</Tag> : <Tag color="orange">委托代表</Tag>;
-      }
-    }
-  ];
-
   return (
     <div className="statistics-container">
       {/* 筛选区域 */}
@@ -528,96 +405,6 @@ const MeetingStatistics = () => {
           scroll={{ x: 1300 }}
         />
       </Card>
-
-      {/* 会议详情弹窗 */}
-      <Modal
-        title="会议详情"
-        width={900}
-        open={detailVisible}
-        onCancel={handleDetailClose}
-        footer={[
-          <Button key="export" onClick={handleExportAttendees}>
-            导出参会人员
-          </Button>,
-          <Button key="close" type="primary" onClick={handleDetailClose}>
-            关闭
-          </Button>
-        ]}
-      >
-        {currentMeeting && (
-          <div>
-            <div className="meeting-detail-info">
-              <div className="detail-row">
-                <div className="detail-item">
-                  <span className="detail-label">会议名称：</span>
-                  <span className="detail-value">{currentMeeting.name}</span>
-                </div>
-              </div>
-              <div className="detail-row">
-                <div className="detail-item">
-                  <span className="detail-label">会议类型：</span>
-                  <span className="detail-value">{getMeetingTypeTag(currentMeeting.type)}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">会议时间：</span>
-                  <span className="detail-value">{currentMeeting.time}</span>
-                </div>
-              </div>
-              <div className="detail-row">
-                <div className="detail-item">
-                  <span className="detail-label">会议地点：</span>
-                  <span className="detail-value">{currentMeeting.location}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">出席率：</span>
-                  <span className="detail-value" style={{ 
-                    color: parseFloat(currentMeeting.attendanceRate) >= 90 ? '#52c41a' : 
-                           (parseFloat(currentMeeting.attendanceRate) >= 80 ? '#faad14' : '#f5222d') 
-                  }}>
-                    {currentMeeting.attendanceRate}
-                  </span>
-                </div>
-              </div>
-              <div className="detail-row">
-                <div className="detail-item">
-                  <span className="detail-label">报名人数：</span>
-                  <span className="detail-value">{currentMeeting.totalRegistrations}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">本人出席：</span>
-                  <span className="detail-value">{currentMeeting.selfAttendance}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">委托出席：</span>
-                  <span className="detail-value">{currentMeeting.delegateAttendance}</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="meeting-detail-divider"></div>
-            
-            <div className="meeting-attendees">
-              <h3>参会人员名单</h3>
-              <div className="attendee-search">
-                <Input.Search 
-                  placeholder="搜索姓名或手机号" 
-                  style={{ width: 250, marginBottom: 16 }}
-                  enterButton
-                />
-              </div>
-              <Table 
-                columns={attendeeColumns}
-                dataSource={attendees}
-                rowKey="id"
-                loading={attendeeLoading}
-                pagination={{ pageSize: 5 }}
-                scroll={{ x: 870 }}
-                size="small"
-              />
-            </div>
-          </div>
-        )}
-      </Modal>
     </div>
   );
 };

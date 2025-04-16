@@ -1,6 +1,6 @@
 /* 统计页面容器 */
 .statistics-container {
-  padding: 20px 0;
+  padding: 20px;
 }
 
 /* 统计布局 */
@@ -10,6 +10,7 @@
   width: 100%;
 }
 
+/* 导航菜单样式 */
 .statistics-menu {
   margin-bottom: 20px;
   border-bottom: 1px solid #f0f0f0;
@@ -19,6 +20,26 @@
 
 .statistics-menu .ant-menu {
   border-bottom: none;
+}
+
+.statistics-menu .ant-menu-item {
+  padding: 0 24px;
+  margin: 0 4px;
+  font-size: 16px;
+}
+
+.statistics-menu .ant-menu-item-selected {
+  color: #1890ff;
+  font-weight: 500;
+}
+
+.statistics-menu .ant-menu-item:hover {
+  color: #1890ff;
+}
+
+.statistics-menu .ant-menu-item-active::after,
+.statistics-menu .ant-menu-item-selected::after {
+  border-bottom: 2px solid #1890ff;
 }
 
 .statistics-content {
@@ -187,4 +208,155 @@
 /* 导出按钮 */
 .export-button {
   margin-left: 8px;
+}
+
+/* 个人详情页面样式 */
+.personal-detail-page {
+  padding: 24px;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+}
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.back-button {
+  padding: 0;
+  height: auto;
+  font-size: 16px;
+}
+
+.info-card,
+.statistics-card,
+.meetings-card {
+  margin-bottom: 24px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.info-card .ant-card-head,
+.statistics-card .ant-card-head,
+.meetings-card .ant-card-head {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 16px 24px;
+}
+
+.info-card .ant-card-head-title,
+.statistics-card .ant-card-head-title,
+.meetings-card .ant-card-head-title {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.info-content {
+  padding: 8px 0;
+}
+
+.info-row {
+  display: flex;
+  margin-bottom: 16px;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.info-item .label {
+  width: 100px;
+  color: #666;
+  font-size: 14px;
+}
+
+.info-item .value {
+  flex: 1;
+  font-size: 14px;
+  color: #333;
+}
+
+.statistics-content {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 0;
+}
+
+.statistics-item {
+  text-align: center;
+  flex: 1;
+}
+
+.statistics-item .label {
+  display: block;
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.statistics-item .value {
+  font-size: 24px;
+  color: #1890ff;
+  font-weight: 500;
+}
+
+.meetings-card .ant-table-thead > tr > th {
+  background: #fafafa;
+  font-weight: 500;
+}
+
+.meetings-card .ant-table-tbody > tr > td {
+  font-size: 14px;
+}
+
+/* 加载和错误状态样式 */
+.loading,
+.error {
+  text-align: center;
+  padding: 48px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+/* 详情页面样式 */
+.detail-card {
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.person-detail-info {
+  padding: 16px 0;
+}
+
+.detail-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  margin-right: 48px;
+  min-width: 280px;
+}
+
+.detail-label {
+  color: #606266;
+  margin-right: 8px;
+  min-width: 100px;
+  text-align: right;
+}
+
+.detail-value {
+  color: #303133;
+  font-weight: 500;
 } 
